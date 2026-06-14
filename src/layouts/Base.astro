@@ -1,0 +1,117 @@
+---
+import "../styles/global.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = "Pretheeksha Fertility Centre — Hope Finds a Home Here",
+  description = "Compassionate, evidence-based fertility care and paediatric services in Kollam, Kerala. Personalised consultations, advanced reproductive medicine, and unwavering support on your journey to parenthood.",
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/png" href="/images/logo.png" />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#1f3a2c" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content="/images/logo.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Fonts: Fraunces (display) + Hanken Grotesk (body) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..560&family=Hanken+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Local business structured data -->
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "MedicalClinic",
+      "name": "Pretheeksha Fertility Centre",
+      "description": description,
+      "image": "https://pretheeksha.com/images/logo.png",
+      "telephone": "+91 83300 84300",
+      "email": "klmclinic@pretheeksha.com",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Meenad",
+        "addressLocality": "Kollam",
+        "addressRegion": "Kerala",
+        "postalCode": "691573",
+        "addressCountry": "IN"
+      },
+      "medicalSpecialty": ["Reproductive Endocrinology", "Pediatric"]
+    })} />
+  </head>
+  <body>
+    <slot />
+
+    <script is:inline>
+      // Staggered scroll reveal
+      const reveal = () => {
+        const els = document.querySelectorAll("[data-reveal]");
+        if (!("IntersectionObserver" in window)) {
+          els.forEach((el) => el.classList.add("is-visible"));
+          return;
+        }
+        const io = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("is-visible");
+                io.unobserve(entry.target);
+              }
+            });
+          },
+          { threshold: 0.12, rootMargin: "0px 0px -8% 0px" }
+        );
+        els.forEach((el) => io.observe(el));
+      };
+
+      // Sticky header state
+      const header = document.getElementById("site-header");
+      const onScroll = () => {
+        if (!header) return;
+        header.classList.toggle("is-scrolled", window.scrollY > 24);
+      };
+
+      // Mobile nav toggle
+      const navToggle = () => {
+        const btn = document.getElementById("nav-toggle");
+        const nav = document.getElementById("primary-nav");
+        if (!btn || !nav) return;
+        const close = () => { nav.classList.remove("open"); btn.setAttribute("aria-expanded", "false"); document.body.classList.remove("nav-open"); };
+        btn.addEventListener("click", () => {
+          const open = nav.classList.toggle("open");
+          btn.setAttribute("aria-expanded", String(open));
+          document.body.classList.toggle("nav-open", open);
+        });
+        nav.querySelectorAll("a").forEach((a) => a.addEventListener("click", close));
+      };
+
+      reveal();
+      navToggle();
+      window.addEventListener("scroll", onScroll, { passive: true });
+      onScroll();
+    </script>
+  </body>
+</html>
