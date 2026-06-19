@@ -20,7 +20,7 @@ const treatments = [
 ];
 
 const team = [
-  { name: "Dr. Unnikrishnan MS", creds: "MBBS, DGO, DNB, FMAS, FRM", role: "Fertility Specialist & Reproductive Surgeon", img: "/images/dr-unnikrishnan.png" },
+  { name: "Dr. Unnikrishnan MS", creds: "MBBS, DGO, DNB, FMAS, FRM", role: "Fertility Specialist & Reproductive Surgeon", img: "/images/dr-unnikrishnan.png", url: "https://doctorunnikrishnan.com/" },
   { name: "Dr. Priyanka Bhuvanendran", creds: "MBBS, MS OBGYN, FMIS, FRM", role: "Consultant — Obstetrics, Gynaecology & Fertility", img: "/images/dr-priyanka.png" },
 ];
 
@@ -52,7 +52,7 @@ const stories = [
             dreams into reality through science, sensitivity and unwavering commitment.
           </p>
           <div class="hero-cta hero-anim" style="--d:0.5s">
-            <a href="#contact" class="btn btn-gold">Book a Consultation</a>
+            <a href="http://localhost:3000/" class="btn btn-gold">Book a Consultation</a>
             <a href="#treatments" class="btn btn-ghost btn-on-dark">Explore Treatments</a>
           </div>
           <ul class="hero-trust hero-anim" style="--d:0.65s">
@@ -120,7 +120,7 @@ const stories = [
             <li>Compassionate support throughout your journey</li>
           </ul>
           <div class="about-actions">
-            <a href="#contact" class="btn btn-primary">Begin Your Journey</a>
+            <a href="#enquiry" class="btn btn-primary">Begin Your Journey</a>
             <div class="app-mini">
               <span>Download the app</span>
               <div class="app-mini-btns">
@@ -169,7 +169,7 @@ const stories = [
               <span class="treat-num">{String(i + 1).padStart(2, "0")}</span>
               <h3>{t.name}</h3>
               <p>{t.text}</p>
-              <a href="#contact" class="treat-link" aria-label={`Enquire about ${t.name}`}>
+              <a href="#enquiry" class="treat-link" aria-label={`Enquire about ${t.name}`}>
                 Enquire <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
               </a>
             </article>
@@ -191,7 +191,13 @@ const stories = [
           {team.map((m, i) => (
             <article class="team-card" data-reveal data-reveal={String((i % 2) + 1)}>
               <div class="team-photo">
-                <img src={m.img} alt={m.name} loading="lazy" />
+                {m.url ? (
+                  <a href={m.url} target="_blank" rel="noopener noreferrer" aria-label={`Visit ${m.name}'s website`}>
+                    <img src={m.img} alt={m.name} loading="lazy" />
+                  </a>
+                ) : (
+                  <img src={m.img} alt={m.name} loading="lazy" />
+                )}
               </div>
               <div class="team-info">
                 <h3>{m.name}</h3>
@@ -272,15 +278,14 @@ const stories = [
       </div>
     </section>
 
-    <!-- CONTACT -->
-    <section id="contact" class="section contact">
+    <!-- ENQUIRY -->
+    <section id="enquiry" class="section contact">
       <span class="blob contact-blob" aria-hidden="true"></span>
       <div class="wrap wrap-wide contact-grid">
         <div class="contact-copy" data-reveal>
-          <span class="eyebrow">Book a Consultation</span>
-          <h2>Take the first step,<br /><em>gently</em></h2>
-          <p class="lede">Reaching out is the bravest part. Share a few details and our care team will
-            respond personally — no pressure, only support.</p>
+          <span class="eyebrow">Send an Enquiry</span>
+          <h2>We're here to <em>help</em></h2>
+          <p class="lede">Have a question about our services or your options? Share a few details and our care team will respond personally — no pressure, only support.</p>
           <ul class="contact-points">
             <li>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
@@ -313,8 +318,9 @@ const stories = [
             </div>
           </div>
           <div class="field">
-            <label for="service">I'm interested in</label>
+            <label for="service">Enquiry about</label>
             <select id="service" name="service">
+              <option>General Enquiry</option>
               <option>Fertility Evaluation</option>
               <option>IUI</option>
               <option>IVF</option>
@@ -325,11 +331,11 @@ const stories = [
             </select>
           </div>
           <div class="field">
-            <label for="message">Anything you'd like us to know? <span>(optional)</span></label>
-            <textarea id="message" name="message" rows="3" placeholder="Share as much or as little as you like."></textarea>
+            <label for="message">Your message <span>(optional)</span></label>
+            <textarea id="message" name="message" rows="3" placeholder="Tell us what you'd like to know."></textarea>
           </div>
-          <button type="submit" class="btn btn-primary contact-submit">Request My Consultation</button>
-          <p class="form-note">Your message is confidential. We typically respond within one business day.</p>
+          <button type="submit" class="btn btn-primary contact-submit">Send Enquiry</button>
+          <p class="form-note">Your enquiry is confidential. We typically respond within one business day.</p>
         </form>
       </div>
     </section>
@@ -537,6 +543,15 @@ const stories = [
     display: flex; align-items: flex-end; justify-content: center;
   }
   .team-photo img { width: 88%; height: 100%; object-fit: contain; object-position: bottom; filter: drop-shadow(0 16px 24px rgba(31,58,44,0.18)); }
+  .team-photo a {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    transition: opacity 0.3s var(--ease);
+  }
+  .team-photo a:hover { opacity: 0.88; }
   .team-info { padding: 1.4rem 1.6rem 1.8rem; text-align: center; }
   .team-info h3 { font-size: 1.4rem; color: var(--forest); }
   .team-role { font-size: 0.9rem; color: var(--text-soft); margin: 0.35rem 0 0.5rem; }
