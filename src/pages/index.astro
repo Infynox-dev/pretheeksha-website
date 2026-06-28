@@ -20,7 +20,7 @@ const treatments = [
 ];
 
 const team = [
-  { name: "Dr. Unnikrishnan MS", creds: "MBBS, DGO, DNB, FMAS, FRM", role: "Fertility Specialist & Reproductive Surgeon", img: "/images/dr-unnikrishnan.png", url: "https://doctorunnikrishnan.com/" },
+  { name: "Dr. Unnikrishnan MS", creds: "MBBS, DGO, DNB, FMAS, FRM", role: "Fertility Specialist & Reproductive Surgeon", img: "/images/dr-unnikrishnan.png", url: "/dr-unnikrishnan" },
   { name: "Dr. Priyanka Bhuvanendran", creds: "MBBS, MS OBGYN, FMIS, FRM", role: "Consultant — Obstetrics, Gynaecology & Fertility", img: "/images/dr-priyanka.png" },
 ];
 
@@ -192,7 +192,11 @@ const stories = [
             <article class="team-card" data-reveal data-reveal={String((i % 2) + 1)}>
               <div class="team-photo">
                 {m.url ? (
-                  <a href={m.url} target="_blank" rel="noopener noreferrer" aria-label={`Visit ${m.name}'s website`}>
+                  <a
+                    href={m.url}
+                    {...(m.url.startsWith("http") ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                    aria-label={`View ${m.name}'s profile`}
+                  >
                     <img src={m.img} alt={m.name} loading="lazy" />
                   </a>
                 ) : (
