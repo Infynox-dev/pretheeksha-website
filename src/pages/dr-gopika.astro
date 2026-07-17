@@ -1,0 +1,666 @@
+---
+import Base from "../layouts/Base.astro";
+import Footer from "../components/Footer.astro";
+
+const credentials = "MBBS, MD Pediatrics, PGPN, Fellowship in Neonatology";
+
+const specialties = [
+  "Neonatology",
+  "Pediatrics",
+  "Child Development",
+];
+
+const quickStats = [
+  { num: "6+", label: "Years of paediatric care" },
+  { num: "IAP", label: "Neonatology fellowship" },
+  { num: "5", label: "Languages spoken" },
+];
+
+const highlights = [
+  "Consultant neonatologist — high-risk newborn care",
+  "Fellowship-trained in neonatal intensive care",
+  "Experienced high-volume paediatric OPD practice",
+  "Evidence-based developmental & preventive care",
+  "Adolescent health & emergency pediatrics",
+  "Clear communication with parents and caregivers",
+];
+
+const experience = [
+  {
+    title: "Consultant in Neonatology",
+    place: "Travancore Medical College Hospital, Kollam · 2025 – Present",
+  },
+  {
+    title: "Fellowship in Neonatology (IAP)",
+    place: "Craft Hospital and Research Centre, Kodungalloor · Feb 2024 – Apr 2025",
+  },
+  {
+    title: "Consultant Pediatrician",
+    place: "Matha Medical Centre, Kollam · Jul 2022 – Feb 2024",
+  },
+  {
+    title: "Assistant Professor — Pediatrics",
+    place: "Mount Zion Medical College Hospital, Adoor, Pathanamthitta",
+  },
+  {
+    title: "M.D. Pediatrics",
+    place: "Jawaharlal Nehru Medical College, KLEU — Belagavi",
+  },
+  {
+    title: "MBBS",
+    place: "Government Medical College — Kochi",
+  },
+];
+
+const training = [
+  {
+    title: "Post Graduate Program in Pediatric Nutrition (PGPN)",
+    place: "Chobanian & Avedisian School of Medicine — Boston",
+  },
+  {
+    title: "Essential Vaccinology Course",
+    place: "Indian Academy of Pediatrics — Kerala",
+  },
+  {
+    title: "Neonatal intensive care & high-risk newborns",
+    place: "Fellowship training — evidence-based NICU practice",
+  },
+  {
+    title: "Preventive healthcare & immunisation",
+    place: "Growth monitoring and developmental care plans",
+  },
+  {
+    title: "Emergency pediatrics & chronic disease management",
+    place: "Acute illness care and long-term paediatric follow-up",
+  },
+  {
+    title: "Pediatric endocrinology & allergy management",
+    place: "Specialised paediatric clinical focus areas",
+  },
+];
+
+const phonePrimary = "+918330084300";
+const phoneDisplay = "+91 83300 84300";
+const clinicEmail = "klmclinic@pretheeksha.com";
+const clinicAddress = "Pretheeksha Fertility Centre, Meenad, Kollam, Kerala — 691573, India";
+const bookingUrl = "http://localhost:3000/login?tab=consultation&doctor=gopika";
+---
+
+<Base
+  title="Dr. Gopika Nair — Neonatologist & Pediatrician"
+  description="Meet Dr. Gopika Nair — Consultant Neonatologist and Pediatrician with MD Pediatrics, PGPN and IAP Fellowship in Neonatology."
+>
+  <header class="profile-header">
+    <div class="wrap wrap-wide profile-header-inner">
+      <a href="/" class="back-link">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        <span>Back to Pretheeksha</span>
+      </a>
+      <div class="profile-header-end">
+        <span class="profile-header-name">Dr. Gopika Nair</span>
+        <a href={bookingUrl} class="btn btn-gold profile-cta">Book Consultation</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="profile-page">
+    <!-- HERO -->
+    <section class="profile-hero">
+      <span class="blob hero-blob" aria-hidden="true"></span>
+      <div class="wrap wrap-wide profile-hero-grid">
+        <div class="profile-hero-copy" data-reveal>
+          <span class="eyebrow">Nidhi · Neonatology &amp; Paediatrics</span>
+          <h1>Dr. Gopika Nair</h1>
+          <p class="hero-creds">{credentials}</p>
+          <ul class="specialty-chips">
+            {specialties.map((s) => <li>{s}</li>)}
+          </ul>
+          <p class="hero-lede">
+            Committed neonatologist and pediatrician delivering evidence-based care for newborns,
+            children and adolescents — with clear guidance for parents at every step.
+          </p>
+          <div class="hero-actions">
+            <a href={bookingUrl} class="btn btn-gold">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+              Book Consultation
+            </a>
+            <a href={`tel:${phonePrimary}`} class="btn btn-ghost">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92Z"/></svg>
+              Call Now
+            </a>
+          </div>
+        </div>
+        <div class="profile-hero-photo" data-reveal data-reveal="2">
+          <div class="photo-frame">
+            <img src="/images/dr-gopika.png" alt="Dr. Gopika Nair" width="480" height="560" />
+          </div>
+        </div>
+      </div>
+
+      <div class="wrap wrap-wide">
+        <div class="stat-band" data-reveal>
+          {quickStats.map((stat) => (
+            <div class="stat-item">
+              <span class="stat-num">{stat.num}</span>
+              <span class="stat-label">{stat.label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section class="section about-doctor">
+      <div class="wrap wrap-wide experience-grid">
+        <div class="experience-copy" data-reveal>
+          <span class="eyebrow">About the Doctor</span>
+          <h2>Dedicated care for newborns and growing children</h2>
+          <p>
+            Meet <strong>Dr. Gopika Nair</strong> — Consultant Neonatologist and Pediatrician.
+            Fellowship-trained in neonatology with advanced expertise in neonatal intensive care
+            and high-risk newborns, she pairs clinical precision with family-centred support.
+          </p>
+          <p>
+            Over six years in paediatric practice, she has managed high-volume OPDs, complex
+            multidisciplinary cases and developmental care plans — communicating clearly with
+            patients, guardians and caregivers. Fluent in English, Malayalam, Hindi, Kannada and Tamil.
+          </p>
+          <ul class="highlight-list">
+            {highlights.map((item) => (
+              <li>{item}</li>
+            ))}
+          </ul>
+        </div>
+        <div class="experience-visual" data-reveal data-reveal="2">
+          <img src="/images/dr-gopika.png" alt="Dr. Gopika Nair" loading="lazy" />
+          <div class="clients-badge">
+            <span class="clients-num">NICU</span>
+            <span class="clients-text">Fellowship in Neonatology (IAP)</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- EXPERIENCE & EDUCATION -->
+    <section class="section achievements">
+      <div class="wrap wrap-wide">
+        <div class="section-head center" data-reveal>
+          <span class="eyebrow center">Credentials</span>
+          <h2>Experience &amp; Education</h2>
+          <p class="lede">Clinical practice and training across leading institutions in Kerala and beyond.</p>
+        </div>
+        <div class="achievement-grid">
+          {experience.map((item, i) => (
+            <article class="achievement-card" data-reveal data-reveal={String((i % 3) + 1)}>
+              <span class="medal" aria-hidden="true">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>
+              </span>
+              <strong>{item.title}</strong>
+              {item.place && <span>{item.place}</span>}
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- CLINICAL FOCUS & TRAINING -->
+    <section class="section conferences">
+      <div class="wrap wrap-wide">
+        <div class="section-head center" data-reveal>
+          <span class="eyebrow center">Expertise</span>
+          <h2>Clinical Focus &amp; Training</h2>
+          <p class="lede">Specialised skills in newborn intensive care, preventive paediatrics and child wellness.</p>
+        </div>
+        <div class="achievement-grid">
+          {training.map((item, i) => (
+            <article class="achievement-card" data-reveal data-reveal={String((i % 3) + 1)}>
+              <span class="medal medal-soft" aria-hidden="true">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+              </span>
+              <strong>{item.title}</strong>
+              {item.place && <span>{item.place}</span>}
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT / CTA -->
+    <section id="contact" class="section contact">
+      <div class="wrap wrap-wide">
+        <div class="contact-card" data-reveal>
+          <div class="contact-info">
+            <span class="eyebrow">Get in touch</span>
+            <h2>Ready to begin your journey?</h2>
+            <p class="lede">Book a consultation online, or reach out directly — we're here to help, gently and confidentially.</p>
+            <ul class="contact-list">
+              <li>
+                <span class="contact-ico" aria-hidden="true">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92Z"/></svg>
+                </span>
+                <div>
+                  <span class="contact-label">Call</span>
+                  <a href={`tel:${phonePrimary}`}>{phoneDisplay}</a>
+                </div>
+              </li>
+              <li>
+                <span class="contact-ico" aria-hidden="true">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>
+                </span>
+                <div>
+                  <span class="contact-label">E-mail</span>
+                  <a href={`mailto:${clinicEmail}`}>{clinicEmail}</a>
+                </div>
+              </li>
+              <li>
+                <span class="contact-ico" aria-hidden="true">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                </span>
+                <div>
+                  <span class="contact-label">Visit</span>
+                  <address>{clinicAddress}</address>
+                </div>
+              </li>
+            </ul>
+          </div>
+          <div class="contact-action">
+            <h3>Book an appointment</h3>
+            <p>Choose a convenient time and consult Dr. Gopika Nair — online or in person.</p>
+            <a href={bookingUrl} class="btn btn-gold">Book Consultation</a>
+            <a href="/#enquiry" class="btn btn-ghost">Send an Enquiry</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+
+  <div class="mobile-book-bar">
+    <a href={`tel:${phonePrimary}`} class="mobile-call" aria-label="Call Dr. Gopika">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 22 16.92Z"/></svg>
+    </a>
+    <a href={bookingUrl} class="btn btn-gold mobile-book-btn">Book Consultation</a>
+  </div>
+
+  <button id="scroll-top" class="scroll-top" type="button" aria-label="Scroll to top">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+  </button>
+
+  <script is:inline>
+    const topBtn = document.getElementById("scroll-top");
+    if (topBtn) {
+      topBtn.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
+      const toggle = () => topBtn.classList.toggle("is-visible", window.scrollY > 500);
+      window.addEventListener("scroll", toggle, { passive: true });
+      toggle();
+    }
+  </script>
+</Base>
+
+<style>
+  .profile-page svg,
+  .profile-header svg,
+  .mobile-book-bar svg,
+  .scroll-top svg { width: 1.25rem; height: 1.25rem; flex-shrink: 0; }
+
+  .profile-header {
+    position: sticky;
+    top: 0;
+    z-index: 90;
+    background: rgba(251, 248, 241, 0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(31, 58, 44, 0.08);
+  }
+  .profile-header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 66px;
+  }
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--forest);
+    transition: color 0.25s var(--ease), gap 0.25s var(--ease);
+  }
+  .back-link svg { width: 18px; height: 18px; }
+  .back-link:hover { color: var(--moss); gap: 0.7rem; }
+  .profile-header-end { display: flex; align-items: center; gap: 1.25rem; margin-left: auto; }
+  .profile-header-name {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    color: var(--forest);
+    font-weight: 500;
+  }
+  .profile-cta { padding: 0.65rem 1.3rem; font-size: 0.9rem; white-space: nowrap; }
+
+  .profile-hero {
+    position: relative;
+    overflow: hidden;
+    padding-block: clamp(2.5rem, 5vw, 4.5rem) clamp(2rem, 4vw, 3rem);
+    background: linear-gradient(180deg, var(--shell), var(--cream));
+  }
+  .hero-blob {
+    width: 540px; height: 540px;
+    background: radial-gradient(circle, rgba(195, 148, 51, 0.28), transparent 70%);
+    top: -180px; right: -160px;
+  }
+  .profile-hero-grid {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: center;
+  }
+  .profile-hero-copy h1 { margin: 0.8rem 0 0.5rem; }
+  .hero-creds {
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--moss);
+    margin-bottom: 1.2rem;
+  }
+  .specialty-chips { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 1.4rem; }
+  .specialty-chips li {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--forest);
+    background: var(--sage-tint);
+    padding: 0.4rem 0.95rem;
+    border-radius: var(--radius-pill);
+  }
+  .hero-lede {
+    font-size: clamp(1.02rem, 0.98rem + 0.3vw, 1.18rem);
+    color: var(--text-soft);
+    line-height: 1.6;
+    max-width: 46ch;
+    margin-bottom: 2rem;
+  }
+  .hero-actions { display: flex; flex-wrap: wrap; gap: 0.9rem; }
+  .hero-actions .btn svg { width: 1.1em; height: 1.1em; }
+
+  .photo-frame {
+    position: relative;
+    border-radius: var(--radius-lg);
+    background: radial-gradient(120% 90% at 50% 0%, var(--sage-tint), var(--cream-deep));
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    aspect-ratio: 4 / 4.4;
+  }
+  .photo-frame img {
+    width: 92%;
+    height: 100%;
+    object-fit: contain;
+    object-position: bottom center;
+    filter: drop-shadow(0 18px 30px rgba(31, 58, 44, 0.18));
+  }
+
+  .stat-band {
+    position: relative;
+    z-index: 1;
+    margin-top: clamp(2rem, 4vw, 3rem);
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    background: var(--forest);
+    border-radius: var(--radius-lg);
+    padding: clamp(1.5rem, 3vw, 2.2rem);
+    box-shadow: var(--shadow);
+  }
+  .stat-item { text-align: center; position: relative; }
+  .stat-item:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    right: 0; top: 50%;
+    transform: translateY(-50%);
+    height: 60%; width: 1px;
+    background: rgba(247, 242, 232, 0.18);
+  }
+  .stat-num {
+    display: block;
+    font-family: var(--font-display);
+    font-size: clamp(1.8rem, 1.2rem + 2vw, 2.8rem);
+    color: var(--honey-soft);
+    line-height: 1;
+  }
+  .stat-label {
+    display: block;
+    margin-top: 0.4rem;
+    font-size: 0.85rem;
+    color: rgba(247, 242, 232, 0.82);
+  }
+
+  .experience-grid {
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: center;
+  }
+  .experience-copy h2 { margin: 0.8rem 0 1.2rem; }
+  .experience-copy p { color: var(--text-soft); margin-bottom: 1rem; }
+  .experience-copy strong { color: var(--forest); }
+  .highlight-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.7rem 1.4rem;
+    margin-top: 1.6rem;
+  }
+  .highlight-list li {
+    position: relative;
+    padding-left: 1.9rem;
+    font-size: 0.94rem;
+    font-weight: 500;
+    color: var(--ink-soft);
+  }
+  .highlight-list li::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 0.05em;
+    width: 1.3rem; height: 1.3rem;
+    border-radius: 50%;
+    background: var(--sage-tint) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231f3a2c' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center / 0.8rem no-repeat;
+  }
+  .experience-visual { position: relative; }
+  .experience-visual img {
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+    width: 100%;
+    background: radial-gradient(120% 90% at 50% 0%, var(--sage-tint), var(--cream-deep));
+    object-fit: contain;
+    aspect-ratio: 4 / 4.2;
+  }
+  .clients-badge {
+    position: absolute;
+    bottom: -22px; left: -18px;
+    background: var(--shell);
+    border-radius: var(--radius);
+    padding: 1rem 1.3rem;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    max-width: 200px;
+  }
+  .clients-num {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    color: var(--honey);
+    line-height: 1;
+  }
+  .clients-text { font-size: 0.8rem; color: var(--text-soft); margin-top: 0.2rem; }
+
+  .section-head { max-width: 44rem; margin-bottom: clamp(2.2rem, 4vw, 3.2rem); }
+  .section-head.center { margin-inline: auto; text-align: center; }
+  .section-head h2 { margin: 0.8rem 0 0.8rem; }
+
+  .achievements { background: linear-gradient(180deg, var(--cream), var(--cream-deep)); }
+  .conferences { background: linear-gradient(180deg, var(--cream-deep), var(--cream)); }
+  .achievement-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.2rem;
+  }
+  .achievement-card {
+    background: var(--shell);
+    border-radius: var(--radius-lg);
+    padding: 1.8rem 1.6rem;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid rgba(31, 58, 44, 0.05);
+    transition: transform 0.35s var(--ease), box-shadow 0.35s var(--ease);
+  }
+  .achievement-card:hover { transform: translateY(-6px); box-shadow: var(--shadow); }
+  .medal {
+    display: grid;
+    place-items: center;
+    width: 48px; height: 48px;
+    border-radius: 14px;
+    background: var(--sage-tint);
+    color: var(--honey);
+    margin-bottom: 1.1rem;
+  }
+  .medal-soft { color: var(--moss); }
+  .medal svg { width: 24px; height: 24px; }
+  .achievement-card strong {
+    display: block;
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 1.12rem;
+    color: var(--forest);
+    margin-bottom: 0.4rem;
+    line-height: 1.25;
+  }
+  .achievement-card span { font-size: 0.88rem; color: var(--ink-muted); }
+
+  .contact-card {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: clamp(2rem, 4vw, 3.5rem);
+    background: var(--shell);
+    border-radius: var(--radius-lg);
+    padding: clamp(2rem, 4vw, 3.2rem);
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(31, 58, 44, 0.06);
+    align-items: center;
+  }
+  .contact-info h2 { margin: 0.8rem 0 1rem; }
+  .contact-list { display: flex; flex-direction: column; gap: 1.2rem; margin-top: 1.8rem; }
+  .contact-list li { display: flex; align-items: flex-start; gap: 0.9rem; }
+  .contact-ico {
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    width: 42px; height: 42px;
+    border-radius: 12px;
+    background: var(--sage-tint);
+    color: var(--moss);
+  }
+  .contact-ico svg { width: 20px; height: 20px; }
+  .contact-label {
+    display: block;
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--moss);
+    margin-bottom: 0.15rem;
+  }
+  .contact-list a {
+    color: var(--forest);
+    font-weight: 600;
+    transition: color 0.25s var(--ease);
+  }
+  .contact-list a:hover { color: var(--honey); }
+  .contact-list address { font-style: normal; color: var(--ink-soft); line-height: 1.5; }
+  .contact-action {
+    background: linear-gradient(160deg, var(--forest), var(--forest-700));
+    border-radius: var(--radius);
+    padding: clamp(1.6rem, 3vw, 2.2rem);
+    color: var(--shell);
+    text-align: center;
+  }
+  .contact-action h3 { color: var(--shell); margin-bottom: 0.6rem; }
+  .contact-action p { color: rgba(247, 242, 232, 0.82); font-size: 0.92rem; margin-bottom: 1.4rem; }
+  .contact-action .btn { width: 100%; }
+  .contact-action .btn-ghost {
+    color: var(--shell);
+    border-color: rgba(247, 242, 232, 0.4);
+    margin-top: 0.7rem;
+  }
+  .contact-action .btn-ghost:hover { background: rgba(247, 242, 232, 0.12); border-color: var(--shell); }
+
+  .mobile-book-bar {
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    z-index: 95;
+    display: none;
+    gap: 0.7rem;
+    padding: 0.7rem 1rem;
+    background: rgba(251, 248, 241, 0.96);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-top: 1px solid rgba(31, 58, 44, 0.1);
+    box-shadow: 0 -10px 30px -20px rgba(31, 58, 44, 0.5);
+  }
+  .mobile-call {
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    width: 50px;
+    border-radius: var(--radius-pill);
+    background: var(--sage-tint);
+    color: var(--forest);
+  }
+  .mobile-call svg { width: 22px; height: 22px; }
+  .mobile-book-btn { flex: 1; }
+
+  .scroll-top {
+    position: fixed;
+    right: 1.5rem;
+    bottom: 1.5rem;
+    z-index: 80;
+    width: 46px; height: 46px;
+    border-radius: var(--radius-sm);
+    background: var(--forest);
+    color: var(--shell);
+    display: grid;
+    place-items: center;
+    box-shadow: var(--shadow);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(12px);
+    transition: opacity 0.3s var(--ease), transform 0.3s var(--ease), visibility 0.3s;
+  }
+  .scroll-top.is-visible { opacity: 1; visibility: visible; transform: none; }
+  .scroll-top svg { width: 20px; height: 20px; }
+  .scroll-top:hover { background: var(--forest-700); }
+
+  @media (max-width: 900px) {
+    .profile-hero-grid,
+    .experience-grid,
+    .contact-card { grid-template-columns: 1fr; }
+    .profile-hero-photo { order: -1; max-width: 340px; margin-inline: auto; }
+    .achievement-grid { grid-template-columns: repeat(2, 1fr); }
+    .clients-badge { left: 0; bottom: -16px; }
+  }
+  @media (max-width: 600px) {
+    .achievement-grid { grid-template-columns: 1fr; }
+    .highlight-list { grid-template-columns: 1fr; }
+    .profile-header-name { display: none; }
+    .profile-header .profile-cta { display: none; }
+    .mobile-book-bar { display: flex; }
+    .scroll-top { bottom: 5.2rem; }
+    main.profile-page { padding-bottom: 4.5rem; }
+    .stat-band { grid-template-columns: 1fr; gap: 1.4rem; }
+    .stat-item:not(:last-child)::after { display: none; }
+    .stat-item:not(:last-child) { padding-bottom: 1.4rem; border-bottom: 1px solid rgba(247, 242, 232, 0.16); }
+  }
+</style>

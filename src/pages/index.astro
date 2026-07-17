@@ -21,7 +21,7 @@ const treatments = [
 
 const team = [
   { name: "Dr. Unnikrishnan MS", creds: "MBBS, DGO, DNB, FMAS, FRM", role: "Fertility Specialist & Reproductive Surgeon", img: "/images/dr-unnikrishnan.png", url: "/dr-unnikrishnan" },
-  { name: "Dr. Priyanka Bhuvanendran", creds: "MBBS, MS OBGYN, FMIS, FRM", role: "Consultant — Obstetrics, Gynaecology & Fertility", img: "/images/dr-priyanka.png" },
+  { name: "Dr. Priyanka Bhuvanendran", creds: "MBBS, MS OBGYN, FMIS, FRM", role: "Consultant — Obstetrics, Gynaecology & Fertility", img: "/images/dr-priyanka.png", url: "/dr-priyanka" },
 ];
 
 const stories = [
@@ -52,7 +52,7 @@ const stories = [
             dreams into reality through science, sensitivity and unwavering commitment.
           </p>
           <div class="hero-cta hero-anim" style="--d:0.5s">
-            <a href="http://localhost:3000/" class="btn btn-gold">Book a Consultation</a>
+            <a href="http://localhost:3000/login" class="btn btn-gold">Book a Consultation</a>
             <a href="#treatments" class="btn btn-ghost btn-on-dark">Explore Treatments</a>
           </div>
           <ul class="hero-trust hero-anim" style="--d:0.65s">
@@ -233,7 +233,9 @@ const stories = [
         </div>
         <div class="nidhi-doctor" data-reveal data-reveal="2">
           <div class="nidhi-photo">
-            <img src="/images/dr-gopika.png" alt="Dr. Gopika Nair" loading="lazy" />
+            <a href="/dr-gopika" aria-label="View Dr. Gopika Nair's profile">
+              <img src="/images/dr-gopika.png" alt="Dr. Gopika Nair" loading="lazy" />
+            </a>
           </div>
           <div class="nidhi-name">
             <h3>Dr. Gopika Nair</h3>
@@ -578,6 +580,12 @@ const stories = [
     background: radial-gradient(120% 90% at 50% 0%, var(--blush-soft), var(--cream-deep));
     display: flex; align-items: flex-end; justify-content: center;
   }
+  .nidhi-photo a {
+    display: flex; align-items: flex-end; justify-content: center;
+    width: 100%; height: 100%;
+    transition: opacity 0.25s var(--ease);
+  }
+  .nidhi-photo a:hover { opacity: 0.88; }
   .nidhi-photo img { width: 96%; height: 100%; object-fit: contain; object-position: bottom; }
   .nidhi-name { text-align: center; padding: 1.2rem 0.5rem 0.4rem; }
   .nidhi-name h3 { font-size: 1.4rem; }
