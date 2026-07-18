@@ -1,0 +1,591 @@
+---
+/** Shared bug-report modal + client logic for the marketing site. */
+---
+
+<div id="bug-report-root" hidden>
+  <!-- Submit modal -->
+  <div class="bug-overlay" data-bug-overlay="submit" hidden></div>
+  <div
+    class="bug-modal"
+    id="bug-report-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="bug-report-title"
+    hidden
+  >
+    <div class="bug-modal-header">
+      <div class="bug-modal-heading">
+        <span class="bug-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m8 2 1.88 1.88"/><path d="M14.12 3.88 16 2"/><path d="M9 7.13v-1a3.003 3.003 0 1 1 6 0v1"/><path d="M12 20c-3.3 0-6-2.7-6-6v-3a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v3c0 3.3-2.7 6-6 6"/><path d="M12 20v-9"/><path d="M6.53 9C4.6 8.8 3 7.1 3 5"/><path d="M6 13H2"/><path d="M3 21c0-2.1 1.7-3.9 3.8-4"/><path d="M20.97 5c0 2.1-1.6 3.8-3.5 4"/><path d="M22 13h-4"/><path d="M17.2 17c2.1.1 3.8 1.9 3.8 4"/></svg>
+        </span>
+        <div>
+          <h2 id="bug-report-title">Report a Bug</h2>
+          <p>Diagnostics are captured automatically for investigation.</p>
+        </div>
+      </div>
+      <button type="button" class="bug-close" data-bug-close="submit" aria-label="Close">&times;</button>
+    </div>
+
+    <form id="bug-report-form" class="bug-form">
+      <label>
+        <span>Your name <em>(optional)</em></span>
+        <input type="text" name="reporterName" maxlength="120" placeholder="Full name" autocomplete="name" />
+      </label>
+      <label>
+        <span>Email <em>(optional)</em></span>
+        <input type="email" name="reporterEmail" maxlength="160" placeholder="you@example.com" autocomplete="email" />
+      </label>
+      <label>
+        <span>Phone <em>(optional)</em></span>
+        <input type="tel" name="reporterPhone" maxlength="40" placeholder="+91 …" autocomplete="tel" />
+      </label>
+      <label>
+        <span>Title <strong>*</strong></span>
+        <input type="text" name="title" required maxlength="160" placeholder="Short summary of the issue" />
+      </label>
+      <label>
+        <span>What went wrong? <strong>*</strong></span>
+        <textarea name="description" required rows="4" placeholder="Describe what you expected vs what happened"></textarea>
+      </label>
+      <label>
+        <span>Steps to reproduce <em>(optional)</em></span>
+        <textarea name="stepsToReproduce" rows="3" placeholder="1. Go to…&#10;2. Click…&#10;3. See error…"></textarea>
+      </label>
+      <p class="bug-note">
+        We'll automatically save page URL, browser, screen size, timezone, and network status
+        to help investigate. The report is saved with pending investigation actions.
+      </p>
+      <div class="bug-actions">
+        <button type="button" class="bug-btn bug-btn-ghost" data-bug-close="submit">Cancel</button>
+        <button type="submit" class="bug-btn bug-btn-primary" id="bug-report-submit">Submit report</button>
+      </div>
+      <p id="bug-report-feedback" class="bug-feedback" hidden></p>
+    </form>
+  </div>
+
+  <!-- My reports panel -->
+  <div class="bug-overlay" data-bug-overlay="list" hidden></div>
+  <div
+    class="bug-modal bug-modal-list"
+    id="bug-reports-panel"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="my-bug-reports-title"
+    hidden
+  >
+    <div class="bug-modal-header">
+      <div class="bug-modal-heading">
+        <span class="bug-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m8 2 1.88 1.88"/><path d="M14.12 3.88 16 2"/><path d="M9 7.13v-1a3.003 3.003 0 1 1 6 0v1"/><path d="M12 20c-3.3 0-6-2.7-6-6v-3a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v3c0 3.3-2.7 6-6 6"/><path d="M12 20v-9"/><path d="M6.53 9C4.6 8.8 3 7.1 3 5"/><path d="M6 13H2"/><path d="M3 21c0-2.1 1.7-3.9 3.8-4"/><path d="M20.97 5c0 2.1-1.6 3.8-3.5 4"/><path d="M22 13h-4"/><path d="M17.2 17c2.1.1 3.8 1.9 3.8 4"/></svg>
+        </span>
+        <div>
+          <h2 id="my-bug-reports-title">My Bug Reports</h2>
+          <p>Reports submitted from this browser on the website.</p>
+        </div>
+      </div>
+      <button type="button" class="bug-close" data-bug-close="list" aria-label="Close">&times;</button>
+    </div>
+    <div id="bug-reports-list" class="bug-list">
+      <p class="bug-list-empty">Loading…</p>
+    </div>
+  </div>
+</div>
+
+<style is:global>
+  .bug-report-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.45rem 0.75rem;
+    border: 1px solid rgba(31, 58, 44, 0.12);
+    border-radius: var(--radius-sm);
+    background: rgba(251, 248, 241, 0.9);
+    color: var(--ink-soft);
+    font-size: 0.82rem;
+    font-weight: 600;
+    font-family: var(--font-body);
+    cursor: pointer;
+    transition: color 0.25s var(--ease), background 0.25s var(--ease), border-color 0.25s var(--ease);
+  }
+  .bug-report-btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+  .bug-report-btn:hover {
+    color: var(--terracotta);
+    border-color: rgba(185, 102, 63, 0.35);
+    background: rgba(243, 221, 210, 0.55);
+  }
+  .bug-report-btn.bug-report-btn-topbar {
+    background: transparent;
+    border-color: rgba(247, 242, 232, 0.22);
+    color: rgba(247, 242, 232, 0.9);
+    padding: 0.25rem 0.55rem;
+    font-size: 0.78rem;
+  }
+  .bug-report-btn.bug-report-btn-topbar:hover {
+    color: #fff;
+    border-color: rgba(230, 200, 120, 0.55);
+    background: rgba(255, 255, 255, 0.08);
+  }
+  .bug-report-btn.bug-report-btn-topbar svg { color: var(--honey-soft); }
+
+  .bug-menu-wrap { position: relative; }
+  .bug-menu {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 0.45rem);
+    min-width: 11.5rem;
+    background: var(--shell);
+    border: 1px solid rgba(31, 58, 44, 0.1);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow);
+    padding: 0.35rem;
+    z-index: 120;
+  }
+  .bug-menu[hidden] { display: none !important; }
+  .bug-menu button {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.65rem 0.75rem;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--ink-soft);
+    font: inherit;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-align: left;
+    cursor: pointer;
+  }
+  .bug-menu button:hover { background: rgba(31, 58, 44, 0.06); color: var(--forest); }
+  .bug-menu button svg { width: 15px; height: 15px; }
+
+  #bug-report-root[hidden] { display: none !important; }
+  #bug-report-root:not([hidden]) { display: contents; }
+
+  .bug-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    background: rgba(35, 36, 31, 0.42);
+    backdrop-filter: blur(2px);
+  }
+  .bug-overlay[hidden] { display: none !important; }
+
+  .bug-modal {
+    position: fixed;
+    z-index: 210;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: min(92vw, 480px);
+    max-height: 90vh;
+    overflow: auto;
+    background: var(--shell);
+    border: 1px solid rgba(31, 58, 44, 0.1);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+  }
+  .bug-modal[hidden] { display: none !important; }
+  .bug-modal-list { width: min(92vw, 520px); display: flex; flex-direction: column; overflow: hidden; }
+
+  .bug-modal-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.1rem 1.25rem;
+    border-bottom: 1px solid rgba(31, 58, 44, 0.08);
+    background: rgba(239, 230, 212, 0.35);
+  }
+  .bug-modal-heading { display: flex; gap: 0.75rem; align-items: flex-start; }
+  .bug-modal-heading h2 {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    color: var(--forest);
+    font-weight: 560;
+    line-height: 1.25;
+  }
+  .bug-modal-heading p { font-size: 0.78rem; color: var(--ink-muted); margin-top: 0.2rem; }
+  .bug-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.1rem;
+    height: 2.1rem;
+    border-radius: 999px;
+    background: rgba(185, 102, 63, 0.12);
+    color: var(--terracotta);
+    flex-shrink: 0;
+  }
+  .bug-icon svg { width: 1.05rem; height: 1.05rem; }
+  .bug-close {
+    border: 0;
+    background: transparent;
+    color: var(--ink-muted);
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0.15rem 0.35rem;
+    border-radius: 8px;
+  }
+  .bug-close:hover { background: rgba(31, 58, 44, 0.06); color: var(--ink); }
+
+  .bug-form { padding: 1.15rem 1.25rem 1.35rem; display: grid; gap: 0.85rem; }
+  .bug-form label { display: grid; gap: 0.35rem; }
+  .bug-form label span {
+    font-size: 0.78rem;
+    font-weight: 650;
+    color: var(--ink-soft);
+  }
+  .bug-form label em { font-style: normal; font-weight: 500; color: var(--ink-muted); }
+  .bug-form label strong { color: var(--terracotta); font-weight: 700; }
+  .bug-form input,
+  .bug-form textarea {
+    width: 100%;
+    border: 1px solid rgba(31, 58, 44, 0.16);
+    border-radius: 10px;
+    padding: 0.65rem 0.75rem;
+    font: inherit;
+    font-size: 0.92rem;
+    color: var(--ink);
+    background: #fff;
+    resize: vertical;
+  }
+  .bug-form input:focus,
+  .bug-form textarea:focus {
+    outline: none;
+    border-color: rgba(195, 148, 51, 0.65);
+    box-shadow: 0 0 0 3px rgba(195, 148, 51, 0.15);
+  }
+  .bug-note {
+    font-size: 0.75rem;
+    color: var(--ink-muted);
+    line-height: 1.5;
+    background: rgba(239, 230, 212, 0.4);
+    border: 1px solid rgba(31, 58, 44, 0.06);
+    border-radius: 10px;
+    padding: 0.7rem 0.8rem;
+  }
+  .bug-actions { display: flex; justify-content: flex-end; gap: 0.55rem; }
+  .bug-btn {
+    border-radius: 10px;
+    padding: 0.6rem 1rem;
+    font: inherit;
+    font-size: 0.85rem;
+    font-weight: 650;
+    cursor: pointer;
+    border: 1px solid transparent;
+  }
+  .bug-btn-ghost { background: transparent; color: var(--ink-soft); border-color: transparent; }
+  .bug-btn-ghost:hover { background: rgba(31, 58, 44, 0.06); color: var(--ink); }
+  .bug-btn-primary { background: var(--terracotta); color: #fff; }
+  .bug-btn-primary:hover { background: #a55736; }
+  .bug-btn-primary:disabled { opacity: 0.6; cursor: wait; }
+  .bug-feedback { font-size: 0.8rem; margin-top: 0.25rem; }
+  .bug-feedback.is-error { color: #9b2c2c; }
+  .bug-feedback.is-ok { color: var(--moss); }
+
+  .bug-list { overflow: auto; max-height: min(70vh, 520px); }
+  .bug-list-empty {
+    text-align: center;
+    padding: 3rem 1.5rem;
+    color: var(--ink-muted);
+    font-size: 0.9rem;
+  }
+  .bug-item {
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid rgba(31, 58, 44, 0.07);
+  }
+  .bug-item-head {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    align-items: center;
+  }
+  .bug-item-title {
+    font-weight: 650;
+    color: var(--forest);
+    font-size: 0.95rem;
+  }
+  .bug-status {
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 0.2rem 0.45rem;
+    border-radius: 999px;
+  }
+  .bug-status-pending { background: #fff4df; color: #9a6b12; }
+  .bug-status-in_progress { background: #e8f1ff; color: #1d4f91; }
+  .bug-status-resolved { background: #e7f5ec; color: #216b3d; }
+  .bug-status-closed { background: #eeebe4; color: #5c5c52; }
+  .bug-item-desc {
+    margin-top: 0.35rem;
+    font-size: 0.82rem;
+    color: var(--ink-soft);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .bug-item-meta {
+    margin-top: 0.4rem;
+    font-size: 0.72rem;
+    color: var(--ink-muted);
+  }
+  .bug-item-actions {
+    margin-top: 0.7rem;
+    padding-top: 0.7rem;
+    border-top: 1px solid rgba(31, 58, 44, 0.06);
+    display: grid;
+    gap: 0.35rem;
+  }
+  .bug-item-actions li {
+    display: flex;
+    gap: 0.45rem;
+    align-items: center;
+    font-size: 0.78rem;
+    color: var(--ink-soft);
+    list-style: none;
+  }
+  .bug-check {
+    width: 0.9rem;
+    height: 0.9rem;
+    border-radius: 4px;
+    border: 1px solid rgba(31, 58, 44, 0.25);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 0.65rem;
+  }
+  .bug-check.is-done {
+    background: var(--moss);
+    border-color: var(--moss);
+    color: #fff;
+  }
+  .bug-item details summary {
+    cursor: pointer;
+    list-style: none;
+  }
+  .bug-item details summary::-webkit-details-marker { display: none; }
+
+  .topbar-inner .bug-menu-wrap { margin-right: auto; }
+  @media (max-width: 920px) {
+    .bug-report-btn .bug-btn-label { display: none; }
+    .topbar-inner .bug-menu-wrap { margin-right: 0; }
+  }
+</style>
+
+<script>
+  import { submitWebsiteBugReport, fetchMyBugReports } from "../lib/bugReport";
+
+  const root = document.getElementById("bug-report-root");
+  const submitModal = document.getElementById("bug-report-modal");
+  const listPanel = document.getElementById("bug-reports-panel");
+  const form = document.getElementById("bug-report-form") as HTMLFormElement | null;
+  const feedback = document.getElementById("bug-report-feedback");
+  const submitBtn = document.getElementById("bug-report-submit") as HTMLButtonElement | null;
+  const listEl = document.getElementById("bug-reports-list");
+  const submitOverlay = document.querySelector('[data-bug-overlay="submit"]') as HTMLElement | null;
+  const listOverlay = document.querySelector('[data-bug-overlay="list"]') as HTMLElement | null;
+
+  function show(el: HTMLElement | null) {
+    if (!el) return;
+    el.hidden = false;
+  }
+  function hide(el: HTMLElement | null) {
+    if (!el) return;
+    el.hidden = true;
+  }
+
+  function openSubmit() {
+    if (!root || !submitModal) return;
+    closeMenus();
+    root.hidden = false;
+    show(submitOverlay);
+    show(submitModal);
+    document.body.style.overflow = "hidden";
+    (form?.elements.namedItem("title") as HTMLInputElement | null)?.focus();
+  }
+
+  function closeSubmit() {
+    hide(submitOverlay);
+    hide(submitModal);
+    if (feedback) {
+      feedback.hidden = true;
+      feedback.textContent = "";
+    }
+    if (listPanel?.hidden !== false) {
+      root && (root.hidden = true);
+      document.body.style.overflow = "";
+    }
+  }
+
+  async function openList() {
+    if (!root || !listPanel || !listEl) return;
+    closeMenus();
+    root.hidden = false;
+    show(listOverlay);
+    show(listPanel);
+    document.body.style.overflow = "hidden";
+    listEl.innerHTML = `<p class="bug-list-empty">Loading…</p>`;
+    try {
+      const reports = await fetchMyBugReports();
+      if (reports.length === 0) {
+        listEl.innerHTML = `<p class="bug-list-empty">No bug reports from this browser yet.<br/>Submit one with “Report a bug”.</p>`;
+        return;
+      }
+      listEl.innerHTML = reports
+        .map((report) => {
+          const done = (report.actions || []).filter((a) => a.status === "completed").length;
+          const total = (report.actions || []).length;
+          const when = report.createdAt?.seconds
+            ? new Date(report.createdAt.seconds * 1000).toLocaleString()
+            : "Just now";
+          const status = report.status || "pending";
+          const actions = (report.actions || [])
+            .map(
+              (a) =>
+                `<li><span class="bug-check ${a.status === "completed" ? "is-done" : ""}">${a.status === "completed" ? "✓" : ""}</span><span class="${a.status === "completed" ? "is-muted" : ""}">${escapeHtml(a.label)}</span></li>`
+            )
+            .join("");
+          return `<details class="bug-item">
+            <summary>
+              <div class="bug-item-head">
+                <span class="bug-item-title">${escapeHtml(report.title)}</span>
+                <span class="bug-status bug-status-${escapeHtml(status)}">${escapeHtml(status.replace("_", " "))}</span>
+              </div>
+              <p class="bug-item-desc">${escapeHtml(report.description || "")}</p>
+              <p class="bug-item-meta">${escapeHtml(when)}${total ? ` · progress ${done}/${total}` : ""}</p>
+            </summary>
+            <ul class="bug-item-actions">${actions || "<li>No investigation actions yet.</li>"}</ul>
+          </details>`;
+        })
+        .join("");
+    } catch (err) {
+      console.error(err);
+      listEl.innerHTML = `<p class="bug-list-empty">Could not load reports. Please try again.</p>`;
+    }
+  }
+
+  function closeList() {
+    hide(listOverlay);
+    hide(listPanel);
+    if (submitModal?.hidden !== false) {
+      root && (root.hidden = true);
+      document.body.style.overflow = "";
+    }
+  }
+
+  function escapeHtml(value: string) {
+    return value
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;");
+  }
+
+  function closeMenus() {
+    document.querySelectorAll<HTMLElement>("[data-bug-menu]").forEach((menu) => {
+      menu.hidden = true;
+    });
+  }
+
+  document.addEventListener("click", (event) => {
+    const target = event.target as HTMLElement | null;
+    if (!target) return;
+
+    const toggle = target.closest<HTMLElement>("[data-bug-menu-toggle]");
+    if (toggle) {
+      event.preventDefault();
+      event.stopPropagation();
+      const wrap = toggle.closest(".bug-menu-wrap");
+      const menu = wrap?.querySelector<HTMLElement>("[data-bug-menu]");
+      if (!menu) return;
+      const willOpen = menu.hidden;
+      closeMenus();
+      menu.hidden = !willOpen;
+      return;
+    }
+
+    if (target.closest("[data-bug-open='submit']")) {
+      event.preventDefault();
+      openSubmit();
+      return;
+    }
+    if (target.closest("[data-bug-open='list']")) {
+      event.preventDefault();
+      openList();
+      return;
+    }
+    if (target.closest("[data-bug-close='submit']") || target.closest('[data-bug-overlay="submit"]')) {
+      closeSubmit();
+      return;
+    }
+    if (target.closest("[data-bug-close='list']") || target.closest('[data-bug-overlay="list"]')) {
+      closeList();
+      return;
+    }
+    if (!target.closest(".bug-menu-wrap")) closeMenus();
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      closeSubmit();
+      closeList();
+      closeMenus();
+    }
+  });
+
+  form?.addEventListener("submit", (event) => {
+    event.preventDefault();
+    if (!form || !submitBtn) return;
+
+    const data = new FormData(form);
+    const title = String(data.get("title") || "").trim();
+    const description = String(data.get("description") || "").trim();
+    if (!title || !description) {
+      if (feedback) {
+        feedback.hidden = false;
+        feedback.className = "bug-feedback is-error";
+        feedback.textContent = "Please provide a title and description.";
+      }
+      return;
+    }
+
+    const payload = {
+      title,
+      description,
+      stepsToReproduce: String(data.get("stepsToReproduce") || "").trim(),
+      reporterName: String(data.get("reporterName") || "").trim(),
+      reporterEmail: String(data.get("reporterEmail") || "").trim(),
+      reporterPhone: String(data.get("reporterPhone") || "").trim(),
+    };
+
+    submitBtn.disabled = true;
+    if (feedback) {
+      feedback.hidden = false;
+      feedback.className = "bug-feedback";
+      feedback.textContent = "Saving report…";
+    }
+
+    void submitWebsiteBugReport(payload)
+      .then(() => {
+        form.reset();
+        closeSubmit();
+      })
+      .catch((err) => {
+        console.error(err);
+        if (feedback) {
+          feedback.hidden = false;
+          feedback.className = "bug-feedback is-error";
+          feedback.textContent = "Could not save bug report. Please try again.";
+        }
+      })
+      .finally(() => {
+        submitBtn.disabled = false;
+      });
+  });
+</script>

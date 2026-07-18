@@ -98,6 +98,16 @@ const bookingUrl = "http://localhost:3000/login?tab=consultation&doctor=gopika";
       </a>
       <div class="profile-header-end">
         <span class="profile-header-name">Dr. Gopika Nair</span>
+        <div class="bug-menu-wrap">
+          <button type="button" class="bug-report-btn" data-bug-menu-toggle aria-label="Bug reports">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8 2 1.88 1.88"/><path d="M14.12 3.88 16 2"/><path d="M9 7.13v-1a3.003 3.003 0 1 1 6 0v1"/><path d="M12 20c-3.3 0-6-2.7-6-6v-3a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v3c0 3.3-2.7 6-6 6"/><path d="M12 20v-9"/></svg>
+            <span class="bug-btn-label">Report Bug</span>
+          </button>
+          <div class="bug-menu" data-bug-menu hidden>
+            <button type="button" data-bug-open="submit">Report a bug</button>
+            <button type="button" data-bug-open="list">My bug reports</button>
+          </div>
+        </div>
         <a href={bookingUrl} class="btn btn-gold profile-cta">Book Consultation</a>
       </div>
     </div>
