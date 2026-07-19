@@ -39,26 +39,71 @@ These choices are grounded in current healthcare/fertility web-design research: 
 
 ```bash
 npm install
+cp .env.example .env
 npm run dev      # http://localhost:4321
 npm run build    # outputs to ./dist
 npm run preview  # preview the production build
+npm run verify   # spins a mock content API + asserts Task 17 acceptance
 ```
+
+## Environment variables
+
+Configured in `.env` (see `.env.example`). Astro exposes any `PUBLIC_*` var
+to shipped browser JS; everything else is server/build-time only.
+
+| Variable | Scope | Purpose |
+|----------|-------|---------|
+| `API_BASE_URL` | build | Public content API base used by build-time fetches (e.g. `http://127.0.0.1:8000/api/v1`). **Required.** |
+| `PUBLIC_API_BASE_URL` | browser | API base used by the lead form + consent discovery in the browser. Falls back to `API_BASE_URL` if unset. |
+| `PUBLIC_BOOKING_APP_URL` | browser | Base URL of the booking app that "Book Consultation" CTAs deep-link into. |
+| `PUBLIC_LEAD_PURPOSE_CODE` | browser | Consent purpose code the lead form binds to. Default: `marketing`. |
+| `PUBLIC_CONTENT_LOCALE` | browser | Locale used for consent notice discovery + SEO fetches. Default: `en-IN`. |
+| `CONTENT_FAIL_CLOSED` | build | When `true` (default), any required content endpoint failure breaks the build. **Never disable in CI/production.** |
+| `ALLOW_CONTENT_FALLBACK` | build | Local-only escape hatch. When `true`, a required content fetch failure falls back to `fixtures/content-fallback.json` instead of failing the build. |
+| `SITE_URL` | build | Overrides `astro.config.mjs` `site` for canonical URLs (used in staging). |
+
+### Fail-closed policy
+
+Required endpoints (`/content/site-settings`, `/content/practitioners`,
+`/content/services`, `/content/seo`) MUST return `2xx` or the build fails.
+This is deliberate: shipping a landing page with silently-missing sections is
+worse than shipping no build at all. Optional endpoints
+(`/content/testimonials`, `/content/faqs`) degrade gracefully — those
+sections just omit content.
+
+The one exception is `ALLOW_CONTENT_FALLBACK=true`, which loads
+`fixtures/content-fallback.json`. Use it for local dev only; leave it `false`
+in CI, staging, and production.
+
+The lead form never embeds a seeded consent notice UUID. Instead, it
+discovers the current published notice at submit time via
+`GET /consent/notices/current?purpose=<code>&locale=<locale>` and submits
+the lead bound to that notice id.
 
 ## Project structure
 
 ```
-public/images/        Brand + photography assets
+public/images/                       Brand + photography assets
 src/
-  layouts/Base.astro      <head>, fonts, structured data, global scripts
-  components/Header.astro  Topbar + sticky nav + mobile drawer
-  components/Footer.astro  Footer
-  pages/index.astro        All page sections + scoped styles
-  styles/global.css        Design tokens + base styles
+  layouts/Base.astro                 <head>, fonts, structured data, optional API SEO
+  components/Header.astro            Topbar + sticky nav (env-driven Book CTA)
+  components/Footer.astro            Footer (env-driven Book CTA)
+  components/LeadForm.astro          Consent-aware lead capture (notice discovery + POST)
+  pages/index.astro                  Home page — fetches practitioners/services/testimonials/SEO at build
+  pages/practitioners/[slug].astro   Dynamic practitioner pages from /content/practitioners
+  pages/dr-unnikrishnan.astro        Rich static legacy profile (kept as fallback)
+  lib/env.ts                         Build + public env resolvers
+  lib/booking.ts                     Book CTA URL + UTM passthrough helper
+  lib/api/content.ts                 Build-time content client (fail-closed)
+  lib/api/consent.ts                 Browser-side notice discovery + lead submission
+  styles/global.css                  Design tokens + base styles
+fixtures/content-fallback.json       Local-only content bundle used when ALLOW_CONTENT_FALLBACK=true
+scripts/verify-landing.mjs           Task 17 automated verification (mock API + astro build)
 ```
 
 ## Notes for the client
 
 - **Imagery** — the doctor portraits and logo are the official assets from pretheeksha.com. Hero/lifestyle photographs are tasteful royalty-free stand-ins (Unsplash) and should be swapped for the clinic's own photography before launch.
-- **Testimonials** — the patient quotes are representative placeholders (paraphrased in the spirit of the original Malayalam reviews). Replace with approved, consented patient stories.
-- **Contact form** — currently uses a `mailto:` fallback. Wire it to a backend / form service (e.g. a serverless endpoint or form provider) for production.
+- **Testimonials** — patient quotes are now sourced from `/content/testimonials`. Add approved, consented patient stories through the platform's content admin flow.
+- **Contact form** — wired to the Pretheeksha platform's `/content/leads` endpoint with consent notice discovery. No `mailto:` fallback.
 - **App store links** — placeholders (`#`); point them to the live Play Store / App Store listings.

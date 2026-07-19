@@ -1,0 +1,191 @@
+---
+import Base from "../../layouts/Base.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import LeadForm from "../../components/LeadForm.astro";
+import { loadContentBundle, type Practitioner } from "../../lib/api/content.ts";
+import { getPublicEnv } from "../../lib/env.ts";
+import { bookingUrl } from "../../lib/booking.ts";
+
+export async function getStaticPaths() {
+  const bundle = await loadContentBundle({
+    routes: ["/practitioners"],
+  });
+  return bundle.practitioners.map((p) => ({
+    params: { slug: p.slug },
+    props: {
+      practitioner: p,
+      services: bundle.services,
+    },
+  }));
+}
+
+interface RouteProps {
+  practitioner: Practitioner;
+  services: Awaited<ReturnType<typeof loadContentBundle>>["services"];
+}
+
+const { practitioner, services } = Astro.props as RouteProps;
+const env = getPublicEnv();
+const bookCta = bookingUrl(env.PUBLIC_BOOKING_APP_URL, {
+  utm_source: "landing",
+  utm_medium: "practitioner",
+  utm_campaign: practitioner.slug,
+});
+
+const seoTitle =
+  practitioner.seo_title ||
+  `${practitioner.public_display_name} — Pretheeksha Fertility Centre`;
+const seoDescription =
+  practitioner.seo_description ||
+  practitioner.bio?.slice(0, 200) ||
+  `Consult ${practitioner.public_display_name} at Pretheeksha Fertility Centre.`;
+---
+
+<Base title={seoTitle} description={seoDescription}>
+  <a id="top"></a>
+  <Header />
+  <main>
+    <section class="practitioner-hero">
+      <div class="wrap wrap-wide practitioner-grid">
+        <div class="practitioner-photo">
+          {practitioner.photo_url ? (
+            <img
+              src={practitioner.photo_url}
+              alt={practitioner.public_display_name}
+              loading="eager"
+            />
+          ) : (
+            <div class="practitioner-photo-placeholder" aria-hidden="true">
+              <span>{practitioner.public_display_name.charAt(0)}</span>
+            </div>
+          )}
+        </div>
+        <div class="practitioner-copy">
+          <span class="eyebrow">Our Team</span>
+          <h1>{practitioner.public_display_name}</h1>
+          {practitioner.public_credentials && (
+            <p class="practitioner-creds">{practitioner.public_credentials}</p>
+          )}
+          {practitioner.bio && (
+            <div class="practitioner-bio">
+              {practitioner.bio.split(/\n{2,}/).map((para) => (
+                <p>{para}</p>
+              ))}
+            </div>
+          )}
+          <div class="practitioner-cta">
+            <a href={bookCta} class="btn btn-primary">Book Consultation</a>
+            <a href="#enquiry" class="btn btn-ghost">Send an enquiry</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="enquiry" class="section contact">
+      <span class="blob contact-blob" aria-hidden="true"></span>
+      <div class="wrap wrap-wide contact-grid">
+        <div class="contact-copy" data-reveal>
+          <span class="eyebrow">Send an Enquiry</span>
+          <h2>Ask about a <em>consultation</em></h2>
+          <p class="lede">
+            Share a few details and our care team will respond personally — no
+            pressure, only support.
+          </p>
+        </div>
+        <LeadForm services={services} formId="practitioner-lead" />
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Base>
+
+<style>
+  .practitioner-hero {
+    padding-block: clamp(4rem, 8vw, 7rem);
+    background: linear-gradient(180deg, var(--cream), var(--cream-deep));
+  }
+  .practitioner-grid {
+    display: grid;
+    grid-template-columns: 0.9fr 1.1fr;
+    gap: clamp(2.5rem, 6vw, 5rem);
+    align-items: center;
+  }
+  .practitioner-photo {
+    aspect-ratio: 4 / 4.2;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: radial-gradient(120% 90% at 50% 0%, var(--sage-tint), var(--cream-deep));
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    box-shadow: var(--shadow);
+  }
+  .practitioner-photo img {
+    width: 92%;
+    height: 100%;
+    object-fit: contain;
+    object-position: bottom;
+    filter: drop-shadow(0 16px 24px rgba(31, 58, 44, 0.18));
+  }
+  .practitioner-photo-placeholder {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 100%;
+    color: var(--forest);
+    font-family: var(--font-display);
+    font-size: 6rem;
+  }
+  .practitioner-copy h1 {
+    margin: 0.8rem 0 0.6rem;
+  }
+  .practitioner-creds {
+    color: var(--moss);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    margin-bottom: 1.2rem;
+  }
+  .practitioner-bio p + p {
+    margin-top: 1rem;
+  }
+  .practitioner-bio p {
+    color: var(--text-soft);
+  }
+  .practitioner-cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.9rem;
+    margin-top: 1.8rem;
+  }
+  @media (max-width: 900px) {
+    .practitioner-grid {
+      grid-template-columns: 1fr;
+    }
+    .practitioner-photo {
+      max-width: 420px;
+      margin-inline: auto;
+    }
+  }
+  .contact-blob {
+    width: 480px;
+    height: 480px;
+    background: radial-gradient(circle, rgba(227, 179, 163, 0.4), transparent 70%);
+    bottom: -180px;
+    left: -160px;
+  }
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.05fr;
+    gap: clamp(2.5rem, 6vw, 5rem);
+    align-items: center;
+  }
+  .contact {
+    overflow: hidden;
+  }
+  @media (max-width: 900px) {
+    .contact-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -2,7 +2,19 @@
 import Base from "../layouts/Base.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
+import LeadForm from "../components/LeadForm.astro";
+import { loadContentBundle } from "../lib/api/content.ts";
+import { getPublicEnv } from "../lib/env.ts";
+import { bookingUrl, extractAttribution } from "../lib/booking.ts";
 
+const bundle = await loadContentBundle({ routes: ["/"] });
+const env = getPublicEnv();
+const attribution = extractAttribution(Astro.url.searchParams);
+const bookHref = bookingUrl(env.PUBLIC_BOOKING_APP_URL, attribution);
+const seo = bundle.seoByRoute["/"] ?? null;
+
+// Commitments are brand copy, not clinical content — stay hard-coded so
+// marketing can tweak them without a content-service round trip.
 const commitments = [
   { title: "Path to Parenthood", text: "Guiding your steps with empathy and science, from first consultation to first heartbeat.", icon: "heart" },
   { title: "Miracle Happens", text: "Where medical expertise meets destiny — advanced care that turns hope into reality.", icon: "spark" },
@@ -10,28 +22,50 @@ const commitments = [
   { title: "Dream It", text: "Your dreams are valid and your journey matters. We walk beside you, never ahead.", icon: "leaf" },
 ];
 
-const treatments = [
-  { name: "Fertility Evaluation", text: "Comprehensive assessment for couples and individuals to understand every factor with clarity and compassion." },
-  { name: "IUI — Intrauterine Insemination", text: "A gentle, minimally invasive first step, carefully timed and monitored for the best possible chance." },
-  { name: "IVF — In Vitro Fertilisation", text: "Cutting-edge laboratory care and personalised protocols designed around your unique biology." },
-  { name: "ICSI", text: "Precision micro-fertilisation for complex cases, performed by an experienced embryology team." },
-  { name: "Fertility Preservation", text: "Egg, sperm and embryo freezing to protect your options for the future, whenever the time is right." },
-  { name: "Online Consultation", text: "Confidential video consultations that meet you wherever you are — including our late-night researchers." },
-];
+const services = bundle.services;
+const practitioners = bundle.practitioners;
+const testimonials = bundle.testimonials;
 
-const team = [
-  { name: "Dr. Unnikrishnan MS", creds: "MBBS, DGO, DNB, FMAS, FRM", role: "Fertility Specialist & Reproductive Surgeon", img: "/images/dr-unnikrishnan.png", url: "/dr-unnikrishnan" },
-  { name: "Dr. Priyanka Bhuvanendran", creds: "MBBS, MS OBGYN, FMIS, FRM", role: "Consultant — Obstetrics, Gynaecology & Fertility", img: "/images/dr-priyanka.png", url: "/dr-priyanka" },
-];
+// Preserve legacy team assets when the API doesn't provide a photo URL. The
+// static `dr-unnikrishnan.astro` page is kept as a rich fallback; when the API
+// exposes the same slug, the dynamic `/practitioners/{slug}` route wins.
+const legacyProfileByName: Record<string, { img: string; role: string; legacyHref?: string }> = {
+  "Dr. Unnikrishnan MS": {
+    img: "/images/dr-unnikrishnan.png",
+    role: "Fertility Specialist & Reproductive Surgeon",
+    legacyHref: "/dr-unnikrishnan",
+  },
+  "Dr. Priyanka Bhuvanendran": {
+    img: "/images/dr-priyanka.png",
+    role: "Consultant — Obstetrics, Gynaecology & Fertility",
+    legacyHref: "/dr-priyanka",
+  },
+  "Dr. Gopika Nair": {
+    img: "/images/logo.png",
+    role: "Consultant Neonatologist & Pediatrician",
+    legacyHref: "/dr-gopika",
+  },
+};
 
-const stories = [
-  { quote: "After 14 years of waiting, the team's honesty and care gave us our miracle. I finally became a mother — words cannot hold this happiness.", name: "Ambili", meta: "Online Consultation" },
-  { quote: "Ten years of marriage, countless reports, so much exhaustion. Here, for the first time, someone truly listened. Today our prayers are answered.", name: "Suchithra", meta: "Online Consultation" },
-  { quote: "Three months of treatment and the news we dreamed of arrived. The doctors guided every step with patience and warmth. Forever grateful.", name: "Gouri Priya", meta: "Online Consultation" },
-];
+const team = practitioners.map((p) => {
+  const legacy = legacyProfileByName[p.public_display_name] ?? {};
+  return {
+    name: p.public_display_name,
+    creds: p.public_credentials ?? "",
+    role: legacy.role ?? "Pretheeksha Practitioner",
+    img: p.photo_url ?? legacy.img ?? "/images/logo.png",
+    url: `/practitioners/${p.slug}`,
+  };
+});
+
+const stories = testimonials.map((t) => ({
+  quote: t.body,
+  name: t.author_display_name,
+  meta: "Patient story",
+}));
 ---
 
-<Base>
+<Base seo={seo}>
   <a id="top"></a>
   <Header />
   <main>
@@ -52,7 +86,7 @@ const stories = [
             dreams into reality through science, sensitivity and unwavering commitment.
           </p>
           <div class="hero-cta hero-anim" style="--d:0.5s">
-            <a href="http://localhost:3000/login" class="btn btn-gold">Book a Consultation</a>
+            <a href={bookHref} class="btn btn-gold">Book a Consultation</a>
             <a href="#treatments" class="btn btn-ghost btn-on-dark">Explore Treatments</a>
           </div>
           <ul class="hero-trust hero-anim" style="--d:0.65s">
@@ -164,12 +198,12 @@ const stories = [
             treatment is shaped around your story, your biology and your hopes.</p>
         </div>
         <div class="treat-grid">
-          {treatments.map((t, i) => (
+          {services.map((s, i) => (
             <article class="treat-card" data-reveal data-reveal={String((i % 3) + 1)}>
               <span class="treat-num">{String(i + 1).padStart(2, "0")}</span>
-              <h3>{t.name}</h3>
-              <p>{t.text}</p>
-              <a href="#enquiry" class="treat-link" aria-label={`Enquire about ${t.name}`}>
+              <h3>{s.public_name}</h3>
+              <p>{s.summary}</p>
+              <a href="#enquiry" class="treat-link" aria-label={`Enquire about ${s.public_name}`}>
                 Enquire <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
               </a>
             </article>
@@ -246,26 +280,28 @@ const stories = [
     </section>
 
     <!-- STORIES -->
-    <section id="stories" class="section stories">
-      <div class="wrap wrap-wide">
-        <div class="section-head center" data-reveal>
-          <span class="eyebrow center">Voices of Delight</span>
-          <h2>Stories of hope<br />and fulfilled dreams</h2>
+    {stories.length > 0 && (
+      <section id="stories" class="section stories">
+        <div class="wrap wrap-wide">
+          <div class="section-head center" data-reveal>
+            <span class="eyebrow center">Voices of Delight</span>
+            <h2>Stories of hope<br />and fulfilled dreams</h2>
+          </div>
+          <div class="stories-grid">
+            {stories.map((s, i) => (
+              <figure class="story-card" data-reveal data-reveal={String((i % 3) + 1)}>
+                <span class="quote-mark" aria-hidden="true">&ldquo;</span>
+                <blockquote>{s.quote}</blockquote>
+                <figcaption>
+                  <span class="story-avatar" aria-hidden="true">{s.name.charAt(0)}</span>
+                  <span class="story-meta"><strong>{s.name}</strong><span>{s.meta}</span></span>
+                </figcaption>
+              </figure>
+            ))}
+          </div>
         </div>
-        <div class="stories-grid">
-          {stories.map((s, i) => (
-            <figure class="story-card" data-reveal data-reveal={String((i % 3) + 1)}>
-              <span class="quote-mark" aria-hidden="true">&ldquo;</span>
-              <blockquote>{s.quote}</blockquote>
-              <figcaption>
-                <span class="story-avatar" aria-hidden="true">{s.name.charAt(0)}</span>
-                <span class="story-meta"><strong>{s.name}</strong><span>{s.meta}</span></span>
-              </figcaption>
-            </figure>
-          ))}
-        </div>
-      </div>
-    </section>
+      </section>
+    )}
 
     <!-- APP DOWNLOAD -->
     <section class="app-band">
@@ -308,41 +344,7 @@ const stories = [
           </ul>
         </div>
 
-        <form class="contact-form" data-reveal data-reveal="2" action="mailto:klmclinic@pretheeksha.com" method="post" enctype="text/plain">
-          <div class="field">
-            <label for="name">Your name</label>
-            <input id="name" name="name" type="text" placeholder="e.g. Anjali Menon" required />
-          </div>
-          <div class="field-row">
-            <div class="field">
-              <label for="phone">Phone</label>
-              <input id="phone" name="phone" type="tel" placeholder="+91 ..." required />
-            </div>
-            <div class="field">
-              <label for="email">Email</label>
-              <input id="email" name="email" type="email" placeholder="you@email.com" />
-            </div>
-          </div>
-          <div class="field">
-            <label for="service">Enquiry about</label>
-            <select id="service" name="service">
-              <option>General Enquiry</option>
-              <option>Fertility Evaluation</option>
-              <option>IUI</option>
-              <option>IVF</option>
-              <option>ICSI</option>
-              <option>Fertility Preservation</option>
-              <option>Online Consultation</option>
-              <option>Nidhi — Paediatric Care</option>
-            </select>
-          </div>
-          <div class="field">
-            <label for="message">Your message <span>(optional)</span></label>
-            <textarea id="message" name="message" rows="3" placeholder="Tell us what you'd like to know."></textarea>
-          </div>
-          <button type="submit" class="btn btn-primary contact-submit">Send Enquiry</button>
-          <p class="form-note">Your enquiry is confidential. We typically respond within one business day.</p>
-        </form>
+        <LeadForm services={services} formId="landing-lead" />
       </div>
     </section>
   </main>

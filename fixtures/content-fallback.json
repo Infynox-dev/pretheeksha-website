@@ -1,0 +1,130 @@
+{
+  "siteSettings": {
+    "settings": {
+      "clinic_name": "Pretheeksha Fertility Centre",
+      "phone": "+91 83300 84300",
+      "email": "klmclinic@pretheeksha.com",
+      "address": {
+        "street": "Meenad",
+        "city": "Kollam",
+        "region": "Kerala",
+        "postal_code": "691573",
+        "country": "IN"
+      }
+    },
+    "updated_at": null
+  },
+  "practitioners": [
+    {
+      "slug": "dr-unnikrishnan",
+      "public_display_name": "Dr. Unnikrishnan MS",
+      "public_credentials": "MBBS, DGO, DNB, FMAS, FRM",
+      "bio": "Fertility Specialist & Reproductive Surgeon with over a decade of experience helping couples build families through evidence-based, empathetic care.",
+      "photo_url": "/images/dr-unnikrishnan.png",
+      "seo_title": "Dr. Unnikrishnan MS — Fertility Specialist | Pretheeksha",
+      "seo_description": "Consultation with Dr. Unnikrishnan MS, Fertility Specialist and Reproductive Surgeon at Pretheeksha Fertility Centre, Kollam.",
+      "published_at": null
+    },
+    {
+      "slug": "dr-priyanka-bhuvanendran",
+      "public_display_name": "Dr. Priyanka Bhuvanendran",
+      "public_credentials": "MBBS, MS OBGYN, FMIS, FRM",
+      "bio": "Consultant in Obstetrics, Gynaecology and Fertility. Passionate about patient-centred care and personalised protocols.",
+      "photo_url": "/images/dr-priyanka.png",
+      "seo_title": "Dr. Priyanka Bhuvanendran — OBGYN & Fertility | Pretheeksha",
+      "seo_description": "Meet Dr. Priyanka Bhuvanendran, Consultant Obstetrician, Gynaecologist and Fertility specialist at Pretheeksha.",
+      "published_at": null
+    }
+  ],
+  "services": [
+    {
+      "slug": "fertility-evaluation",
+      "public_name": "Fertility Evaluation",
+      "summary": "Comprehensive assessment for couples and individuals to understand every factor with clarity and compassion.",
+      "body_markdown": null,
+      "seo_title": null,
+      "seo_description": null,
+      "published_at": null
+    },
+    {
+      "slug": "iui",
+      "public_name": "IUI — Intrauterine Insemination",
+      "summary": "A gentle, minimally invasive first step, carefully timed and monitored for the best possible chance.",
+      "body_markdown": null,
+      "seo_title": null,
+      "seo_description": null,
+      "published_at": null
+    },
+    {
+      "slug": "ivf",
+      "public_name": "IVF — In Vitro Fertilisation",
+      "summary": "Cutting-edge laboratory care and personalised protocols designed around your unique biology.",
+      "body_markdown": null,
+      "seo_title": null,
+      "seo_description": null,
+      "published_at": null
+    },
+    {
+      "slug": "icsi",
+      "public_name": "ICSI",
+      "summary": "Precision micro-fertilisation for complex cases, performed by an experienced embryology team.",
+      "body_markdown": null,
+      "seo_title": null,
+      "seo_description": null,
+      "published_at": null
+    },
+    {
+      "slug": "fertility-preservation",
+      "public_name": "Fertility Preservation",
+      "summary": "Egg, sperm and embryo freezing to protect your options for the future, whenever the time is right.",
+      "body_markdown": null,
+      "seo_title": null,
+      "seo_description": null,
+      "published_at": null
+    },
+    {
+      "slug": "online-consultation",
+      "public_name": "Online Consultation",
+      "summary": "Confidential video consultations that meet you wherever you are.",
+      "body_markdown": null,
+      "seo_title": null,
+      "seo_description": null,
+      "published_at": null
+    }
+  ],
+  "testimonials": [
+    {
+      "id": "00000000-0000-0000-0000-000000000001",
+      "author_display_name": "Ambili",
+      "body": "After 14 years of waiting, the team's honesty and care gave us our miracle. I finally became a mother — words cannot hold this happiness.",
+      "locale": "en-IN",
+      "approved_at": null
+    },
+    {
+      "id": "00000000-0000-0000-0000-000000000002",
+      "author_display_name": "Suchithra",
+      "body": "Ten years of marriage, countless reports, so much exhaustion. Here, for the first time, someone truly listened. Today our prayers are answered.",
+      "locale": "en-IN",
+      "approved_at": null
+    },
+    {
+      "id": "00000000-0000-0000-0000-000000000003",
+      "author_display_name": "Gouri Priya",
+      "body": "Three months of treatment and the news we dreamed of arrived. The doctors guided every step with patience and warmth. Forever grateful.",
+      "locale": "en-IN",
+      "approved_at": null
+    }
+  ],
+  "faqs": [],
+  "seoByRoute": {
+    "/": {
+      "route": "/",
+      "locale": "en-IN",
+      "title": "Pretheeksha Fertility Centre — Hope Finds a Home Here",
+      "description": "Compassionate, evidence-based fertility care and paediatric services in Kollam, Kerala. Personalised consultations, advanced reproductive medicine, and unwavering support on your journey to parenthood.",
+      "canonical_url": null,
+      "og_image_url": null,
+      "robots": null
+    }
+  }
+}

@@ -1,0 +1,247 @@
+---
+/**
+ * Consent-aware lead capture form.
+ *
+ * Renders the same visual form used previously in the contact section, but
+ * on submit it (1) discovers the current published consent notice for the
+ * configured marketing purpose, (2) POSTs the lead bound to that notice id,
+ * and (3) shows a success/error state without leaking internal ids.
+ *
+ * The notice id is never rendered into HTML — it is discovered on the client
+ * at submit time so we can't accidentally ship stale seeded UUIDs.
+ */
+import { getPublicEnv } from "../lib/env.ts";
+
+interface ServiceOption {
+  slug: string;
+  public_name: string;
+}
+
+interface Props {
+  services?: ServiceOption[];
+  formId?: string;
+}
+
+const { services = [], formId = "lead-form" } = Astro.props as Props;
+const env = getPublicEnv();
+
+const options =
+  services.length > 0
+    ? [{ slug: "general", public_name: "General Enquiry" }, ...services]
+    : [
+        { slug: "general", public_name: "General Enquiry" },
+        { slug: "fertility-evaluation", public_name: "Fertility Evaluation" },
+        { slug: "iui", public_name: "IUI" },
+        { slug: "ivf", public_name: "IVF" },
+        { slug: "icsi", public_name: "ICSI" },
+        { slug: "fertility-preservation", public_name: "Fertility Preservation" },
+        { slug: "online-consultation", public_name: "Online Consultation" },
+      ];
+---
+
+<form
+  id={formId}
+  class="contact-form"
+  data-reveal
+  data-reveal="2"
+  data-api-base={env.PUBLIC_API_BASE_URL}
+  data-purpose-code={env.PUBLIC_LEAD_PURPOSE_CODE}
+  data-locale={env.PUBLIC_CONTENT_LOCALE}
+  novalidate
+>
+  <div class="field">
+    <label for={`${formId}-name`}>Your name</label>
+    <input
+      id={`${formId}-name`}
+      name="full_name"
+      type="text"
+      placeholder="e.g. Anjali Menon"
+      autocomplete="name"
+      required
+    />
+  </div>
+
+  <div class="field-row">
+    <div class="field">
+      <label for={`${formId}-phone`}>Phone</label>
+      <input
+        id={`${formId}-phone`}
+        name="phone"
+        type="tel"
+        placeholder="+91 ..."
+        autocomplete="tel"
+        required
+      />
+    </div>
+    <div class="field">
+      <label for={`${formId}-email`}>Email</label>
+      <input
+        id={`${formId}-email`}
+        name="email"
+        type="email"
+        placeholder="you@email.com"
+        autocomplete="email"
+      />
+    </div>
+  </div>
+
+  <div class="field">
+    <label for={`${formId}-service`}>Enquiry about</label>
+    <select id={`${formId}-service`} name="service_slug">
+      {options.map((o) => <option value={o.slug}>{o.public_name}</option>)}
+    </select>
+  </div>
+
+  <div class="field">
+    <label for={`${formId}-message`}>
+      Your message <span>(optional)</span>
+    </label>
+    <textarea
+      id={`${formId}-message`}
+      name="message"
+      rows="3"
+      placeholder="Tell us what you'd like to know."
+    ></textarea>
+  </div>
+
+  <label class="consent-row">
+    <input type="checkbox" name="consent" required checked />
+    <span>
+      I agree to be contacted about my enquiry. See our
+      <a href="#" data-lead-notice-link>consent notice</a> for details.
+    </span>
+  </label>
+
+  <button type="submit" class="btn btn-primary contact-submit" data-lead-submit>
+    Send Enquiry
+  </button>
+
+  <p class="form-note" data-lead-status role="status" aria-live="polite">
+    Your enquiry is confidential. We typically respond within one business day.
+  </p>
+</form>
+
+<script>
+  import { fetchCurrentNotice, submitLead, LeadSubmitError } from "../lib/api/consent.ts";
+
+  interface FormState {
+    submitting: boolean;
+  }
+
+  const forms = document.querySelectorAll<HTMLFormElement>(".contact-form[data-api-base]");
+  forms.forEach((form) => {
+    const state: FormState = { submitting: false };
+    const status = form.querySelector<HTMLElement>("[data-lead-status]");
+    const button = form.querySelector<HTMLButtonElement>("[data-lead-submit]");
+    const apiBase = form.dataset.apiBase || "";
+    const purposeCode = form.dataset.purposeCode || "marketing";
+    const locale = form.dataset.locale || "en-IN";
+    const defaultStatus = status?.textContent ?? "";
+
+    const setStatus = (msg: string, tone: "info" | "success" | "error") => {
+      if (!status) return;
+      status.textContent = msg;
+      status.dataset.tone = tone;
+    };
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      if (state.submitting) return;
+
+      const data = new FormData(form);
+      const full_name = String(data.get("full_name") || "").trim();
+      const phone = String(data.get("phone") || "").trim();
+      const email = String(data.get("email") || "").trim();
+      const message = String(data.get("message") || "").trim();
+      const service = String(data.get("service_slug") || "").trim();
+      const consent = data.get("consent") === "on";
+
+      if (!full_name) return setStatus("Please add your name.", "error");
+      if (!phone && !email)
+        return setStatus("Please add a phone number or email so we can reply.", "error");
+      if (!consent)
+        return setStatus("Please tick the consent box so we can contact you.", "error");
+
+      state.submitting = true;
+      if (button) button.disabled = true;
+      setStatus("Sending your enquiry…", "info");
+
+      try {
+        const notice = await fetchCurrentNotice(apiBase, purposeCode, locale);
+        const messageWithService =
+          service && service !== "general"
+            ? `[interest: ${service}]${message ? "\n\n" + message : ""}`
+            : message || undefined;
+        await submitLead(apiBase, {
+          full_name,
+          email: email || undefined,
+          phone: phone || undefined,
+          message: messageWithService,
+          notice_id: notice?.notice_id,
+          purpose_code: purposeCode,
+          locale,
+          source_code: "landing",
+        });
+        setStatus(
+          "Thank you — your enquiry is with our care team. We'll be in touch shortly.",
+          "success",
+        );
+        form.reset();
+      } catch (err) {
+        const msg =
+          err instanceof LeadSubmitError
+            ? err.userMessage
+            : "Something went wrong. Please try again or call us directly.";
+        setStatus(msg, "error");
+      } finally {
+        state.submitting = false;
+        if (button) button.disabled = false;
+        if (!status?.dataset.tone || status.dataset.tone === "info") {
+          // if we never reset to something else, restore default note eventually
+          setTimeout(() => {
+            if (status && status.dataset.tone === "info") {
+              status.textContent = defaultStatus;
+              delete status.dataset.tone;
+            }
+          }, 8000);
+        }
+      }
+    });
+  });
+</script>
+
+<style>
+  .consent-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    margin: 0.4rem 0 1.1rem;
+    font-size: 0.86rem;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+  .consent-row input[type="checkbox"] {
+    margin-top: 0.25rem;
+    accent-color: var(--forest);
+    width: 1rem;
+    height: 1rem;
+    flex-shrink: 0;
+  }
+  .consent-row a {
+    color: var(--forest);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  [data-lead-status][data-tone="success"] {
+    color: var(--moss);
+    font-weight: 600;
+  }
+  [data-lead-status][data-tone="error"] {
+    color: var(--terracotta);
+    font-weight: 600;
+  }
+  [data-lead-submit][disabled] {
+    opacity: 0.7;
+    cursor: progress;
+  }
+</style>

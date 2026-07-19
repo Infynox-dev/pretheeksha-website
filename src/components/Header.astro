@@ -1,10 +1,28 @@
 ---
-const nav = [
-  { label: "About", href: "#about" },
-  { label: "Treatments", href: "#treatments" },
-  { label: "Our Team", href: "#team" },
-  { label: "Nidhi", href: "#nidhi" },
-  { label: "Stories", href: "#stories" },
+import { getPublicEnv } from "../lib/env.ts";
+import { bookingUrl, extractAttribution } from "../lib/booking.ts";
+
+interface Props {
+  bookHref?: string;
+  nav?: Array<{ label: string; href: string }>;
+}
+
+const {
+  bookHref: bookHrefProp,
+  nav: navProp,
+} = Astro.props as Props;
+
+const env = getPublicEnv();
+const attribution = extractAttribution(Astro.url.searchParams);
+const bookHref =
+  bookHrefProp || bookingUrl(env.PUBLIC_BOOKING_APP_URL, attribution);
+
+const nav = navProp ?? [
+  { label: "About", href: "/#about" },
+  { label: "Treatments", href: "/#treatments" },
+  { label: "Our Team", href: "/#team" },
+  { label: "Nidhi", href: "/#nidhi" },
+  { label: "Stories", href: "/#stories" },
 ];
 ---
 
@@ -55,7 +73,7 @@ const nav = [
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8 2 1.88 1.88"/><path d="M14.12 3.88 16 2"/><path d="M9 7.13v-1a3.003 3.003 0 1 1 6 0v1"/><path d="M12 20c-3.3 0-6-2.7-6-6v-3a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v3c0 3.3-2.7 6-6 6"/><path d="M12 20v-9"/></svg>
         Report a bug
       </button>
-      <a href="http://localhost:3000/login" class="btn btn-gold nav-cta-mobile">Book Consultation</a>
+      <a href={bookHref} class="btn btn-gold nav-cta-mobile">Book Consultation</a>
     </nav>
 
     <div class="nav-end">
@@ -69,7 +87,7 @@ const nav = [
           <button type="button" data-bug-open="list">My bug reports</button>
         </div>
       </div>
-      <a href="http://localhost:3000/login" class="btn btn-primary nav-cta">Book Consultation</a>
+      <a href={bookHref} class="btn btn-primary nav-cta">Book Consultation</a>
       <button id="nav-toggle" class="nav-toggle" aria-label="Toggle menu" aria-controls="primary-nav" aria-expanded="false">
         <span></span><span></span><span></span>
       </button>

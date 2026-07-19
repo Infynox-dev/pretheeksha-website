@@ -1,12 +1,19 @@
 ---
+import { getPublicEnv } from "../lib/env.ts";
+import { bookingUrl, extractAttribution } from "../lib/booking.ts";
+
+const env = getPublicEnv();
+const attribution = extractAttribution(Astro.url.searchParams);
+const bookHref = bookingUrl(env.PUBLIC_BOOKING_APP_URL, attribution);
+
 const year = new Date().getFullYear();
 const links = [
-  { label: "About", href: "#about" },
-  { label: "Treatments", href: "#treatments" },
-  { label: "Our Team", href: "#team" },
-  { label: "Nidhi Paediatrics", href: "#nidhi" },
-  { label: "Patient Stories", href: "#stories" },
-  { label: "Book Consultation", href: "http://localhost:3000/login" },
+  { label: "About", href: "/#about" },
+  { label: "Treatments", href: "/#treatments" },
+  { label: "Our Team", href: "/#team" },
+  { label: "Nidhi Paediatrics", href: "/#nidhi" },
+  { label: "Patient Stories", href: "/#stories" },
+  { label: "Book Consultation", href: bookHref },
 ];
 const socials = [
   { label: "YouTube", href: "#", d: "M22.54 6.42a2.78 2.78 0 0 0-1.95-2C18.88 4 12 4 12 4s-6.88 0-8.59.42a2.78 2.78 0 0 0-1.95 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.41 19c1.71.42 8.59.42 8.59.42s6.88 0 8.59-.42a2.78 2.78 0 0 0 1.95-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33ZM9.75 15.02v-6.5l5.75 3.25-5.75 3.25Z" },

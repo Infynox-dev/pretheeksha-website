@@ -2,17 +2,38 @@
 import "../styles/global.css";
 import BugReport from "../components/BugReport.astro";
 
+interface SeoMetaProp {
+  title?: string | null;
+  description?: string | null;
+  canonical_url?: string | null;
+  og_image_url?: string | null;
+  robots?: string | null;
+}
+
 interface Props {
   title?: string;
   description?: string;
+  seo?: SeoMetaProp | null;
 }
 
-const {
-  title = "Pretheeksha Fertility Centre — Hope Finds a Home Here",
-  description = "Compassionate, evidence-based fertility care and paediatric services in Kollam, Kerala. Personalised consultations, advanced reproductive medicine, and unwavering support on your journey to parenthood.",
-} = Astro.props;
+const DEFAULT_TITLE =
+  "Pretheeksha Fertility Centre — Hope Finds a Home Here";
+const DEFAULT_DESCRIPTION =
+  "Compassionate, evidence-based fertility care and paediatric services in Kollam, Kerala. Personalised consultations, advanced reproductive medicine, and unwavering support on your journey to parenthood.";
 
-const canonical = new URL(Astro.url.pathname, Astro.site);
+const {
+  title: titleProp,
+  description: descriptionProp,
+  seo,
+} = Astro.props as Props;
+
+const title = seo?.title || titleProp || DEFAULT_TITLE;
+const description = seo?.description || descriptionProp || DEFAULT_DESCRIPTION;
+
+const canonicalDefault = new URL(Astro.url.pathname, Astro.site).toString();
+const canonical = seo?.canonical_url || canonicalDefault;
+const ogImage = seo?.og_image_url || "/images/logo.png";
+const robots = seo?.robots || null;
 ---
 
 <!doctype html>
@@ -27,12 +48,13 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta name="theme-color" content="#1f3a2c" />
+    {robots && <meta name="robots" content={robots} />}
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content="/images/logo.png" />
+    <meta property="og:image" content={ogImage} />
     <meta name="twitter:card" content="summary_large_image" />
 
     <!-- Fonts: Fraunces (display) + Hanken Grotesk (body) -->
