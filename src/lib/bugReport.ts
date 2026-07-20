@@ -1,6 +1,3 @@
-import { doc, setDoc, getDoc, serverTimestamp } from "firebase/firestore";
-import { db } from "./firebase";
-
 export type BugActionStatus = "pending" | "completed";
 export type BugReportStatus = "pending" | "in_progress" | "resolved" | "closed";
 
@@ -46,9 +43,10 @@ export interface BugReport {
   createdAt?: { seconds: number };
 }
 
-const STORAGE_KEY = "pretheeksha_bug_report_ids";
+const IDS_KEY = "pretheeksha_bug_report_ids";
+const REPORTS_KEY = "pretheeksha_bug_reports";
 
-/** Optional Cloud Function URL override, e.g. https://.../submitBugReport */
+/** Optional ingest URL, e.g. a Cloud Function or platform endpoint. */
 const BUG_REPORT_API_URL = (import.meta.env.PUBLIC_BUG_REPORT_API_URL as string | undefined)?.trim() || "";
 
 const DEFAULT_ACTIONS: Omit<BugReportAction, "id">[] = [
@@ -99,7 +97,7 @@ function buildPendingActions(): BugReportAction[] {
 
 export function getSavedBugReportIds(): string[] {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = localStorage.getItem(IDS_KEY);
     if (!raw) return [];
     const parsed = JSON.parse(raw);
     return Array.isArray(parsed) ? parsed.filter((id) => typeof id === "string") : [];
@@ -112,8 +110,31 @@ export function rememberBugReportId(id: string) {
   const ids = getSavedBugReportIds();
   if (!ids.includes(id)) {
     ids.unshift(id);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(ids.slice(0, 50)));
+    localStorage.setItem(IDS_KEY, JSON.stringify(ids.slice(0, 50)));
   }
+}
+
+function loadLocalReports(): Record<string, BugReport> {
+  try {
+    const raw = localStorage.getItem(REPORTS_KEY);
+    if (!raw) return {};
+    const parsed = JSON.parse(raw);
+    return parsed && typeof parsed === "object" ? (parsed as Record<string, BugReport>) : {};
+  } catch {
+    return {};
+  }
+}
+
+function saveLocalReport(report: BugReport) {
+  const all = loadLocalReports();
+  all[report.id] = report;
+  const ids = getSavedBugReportIds();
+  const pruned: Record<string, BugReport> = {};
+  for (const id of ids.slice(0, 50)) {
+    if (all[id]) pruned[id] = all[id];
+  }
+  pruned[report.id] = report;
+  localStorage.setItem(REPORTS_KEY, JSON.stringify(pruned));
 }
 
 export interface SubmitWebsiteBugReportInput {
@@ -123,6 +144,22 @@ export interface SubmitWebsiteBugReportInput {
   reporterName?: string;
   reporterEmail?: string;
   reporterPhone?: string;
+}
+
+function buildLocalReport(input: SubmitWebsiteBugReportInput, diagnostics: BugReportDiagnostics, id: string): BugReport {
+  return {
+    id,
+    title: input.title.trim(),
+    description: input.description.trim(),
+    stepsToReproduce: input.stepsToReproduce?.trim() || "",
+    status: "pending",
+    actions: buildPendingActions(),
+    reporterName: input.reporterName?.trim() || null,
+    reporterEmail: input.reporterEmail?.trim() || null,
+    reporterPhone: input.reporterPhone?.trim() || null,
+    diagnostics,
+    createdAt: { seconds: Math.floor(Date.now() / 1000) },
+  };
 }
 
 async function submitViaApi(input: SubmitWebsiteBugReportInput, diagnostics: BugReportDiagnostics): Promise<string> {
@@ -146,52 +183,13 @@ async function submitViaApi(input: SubmitWebsiteBugReportInput, diagnostics: Bug
   return data.id;
 }
 
-async function submitViaFirestore(input: SubmitWebsiteBugReportInput, diagnostics: BugReportDiagnostics): Promise<string> {
-  const id = `bug_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
-  const actions = buildPendingActions();
-
-  await setDoc(doc(db, "bugReports", id), {
-    title: input.title.trim(),
-    description: input.description.trim(),
-    stepsToReproduce: input.stepsToReproduce?.trim() || "",
-    status: "pending",
-    actions,
-    source: "website",
-    reporterId: null,
-    reporterName: input.reporterName?.trim() || null,
-    reporterEmail: input.reporterEmail?.trim() || null,
-    reporterPhone: input.reporterPhone?.trim() || null,
-    reporterRole: null,
-    reporterPatientId: null,
-    diagnostics,
-    createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp(),
-  });
-
-  return id;
-}
-
 export async function submitWebsiteBugReport(input: SubmitWebsiteBugReportInput): Promise<string> {
   const diagnostics = captureBugDiagnostics();
+  const id = BUG_REPORT_API_URL
+    ? await submitViaApi(input, diagnostics)
+    : `bug_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
 
-  let id: string;
-  if (BUG_REPORT_API_URL) {
-    id = await submitViaApi(input, diagnostics);
-  } else {
-    try {
-      id = await submitViaFirestore(input, diagnostics);
-    } catch (err) {
-      // If direct writes are blocked by undeployed rules, surface a clearer error
-      const message = err instanceof Error ? err.message : String(err);
-      if (/permission|insufficient/i.test(message)) {
-        throw new Error(
-          "Bug reports are blocked by Firestore rules. Deploy firestore.rules (bugReports) or set PUBLIC_BUG_REPORT_API_URL."
-        );
-      }
-      throw err;
-    }
-  }
-
+  saveLocalReport(buildLocalReport(input, diagnostics, id));
   rememberBugReportId(id);
   return id;
 }
@@ -199,18 +197,6 @@ export async function submitWebsiteBugReport(input: SubmitWebsiteBugReportInput)
 export async function fetchMyBugReports(): Promise<BugReport[]> {
   const ids = getSavedBugReportIds();
   if (ids.length === 0) return [];
-
-  const reports = await Promise.all(
-    ids.map(async (id) => {
-      try {
-        const snap = await getDoc(doc(db, "bugReports", id));
-        if (!snap.exists()) return null;
-        return { id: snap.id, ...snap.data() } as BugReport;
-      } catch {
-        return null;
-      }
-    })
-  );
-
-  return reports.filter((r): r is BugReport => r != null);
+  const all = loadLocalReports();
+  return ids.map((id) => all[id]).filter((r): r is BugReport => r != null);
 }

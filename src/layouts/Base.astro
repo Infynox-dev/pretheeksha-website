@@ -122,14 +122,25 @@ const robots = seo?.robots || null;
       const navToggle = () => {
         const btn = document.getElementById("nav-toggle");
         const nav = document.getElementById("primary-nav");
+        const backdrop = document.getElementById("nav-backdrop");
         if (!btn || !nav) return;
-        const close = () => { nav.classList.remove("open"); btn.setAttribute("aria-expanded", "false"); document.body.classList.remove("nav-open"); };
-        btn.addEventListener("click", () => {
-          const open = nav.classList.toggle("open");
+
+        const setOpen = (open) => {
+          nav.classList.toggle("open", open);
+          nav.hidden = !open;
           btn.setAttribute("aria-expanded", String(open));
           document.body.classList.toggle("nav-open", open);
-        });
+          if (backdrop) backdrop.hidden = !open;
+        };
+        const close = () => setOpen(false);
+
+        btn.addEventListener("click", () => setOpen(!nav.classList.contains("open")));
+        backdrop?.addEventListener("click", close);
         nav.querySelectorAll("a").forEach((a) => a.addEventListener("click", close));
+        window.addEventListener("keydown", (e) => { if (e.key === "Escape") close(); });
+        window.addEventListener("resize", () => {
+          if (window.matchMedia("(min-width: 921px)").matches) close();
+        });
       };
 
       reveal();

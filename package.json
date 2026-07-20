@@ -12,7 +12,6 @@
     "verify": "node scripts/verify-landing.mjs"
   },
   "dependencies": {
-    "astro": "^5.6.1",
-    "firebase": "^12.16.0"
+    "astro": "^5.6.1"
   }
 }
