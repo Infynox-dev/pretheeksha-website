@@ -4,22 +4,14 @@ A complete, top-to-bottom redesign of [pretheeksha.com](https://pretheeksha.com)
 
 ## Design system (shared with booking)
 
-**Package:** `@infynox/pretheeksha-design` → `github:Infynox-dev/pretheeksha-design#v1.0.0`  
+**Package:** [`@infynox/pretheeksha-design`](https://www.npmjs.com/package/@infynox/pretheeksha-design) `^1.0.0` (npmjs)  
 **Contract:** [`DESIGN.md`](https://github.com/Infynox-dev/pretheeksha-design/blob/main/DESIGN.md)
 
 ```css
 @import "@infynox/pretheeksha-design/tokens.css";
 ```
 
-When published to npmjs (`npm i @infynox/pretheeksha-design`), Coolify needs no GitHub token. Until then, use the git pin above.
-
-### Coolify — secret while installing from private GitHub
-
-| Build arg / secret | Value |
-|--------------------|--------|
-| `GITHUB_TOKEN` | PAT with **Contents: Read** on `Infynox-dev/pretheeksha-design` (owner **Infynox-dev** or any collaborator with access) |
-
-Landing and booking share one brand: forest / honey / cream. Follow `DESIGN.md`.
+Coolify: **no `GITHUB_TOKEN`** — install is from the public registry. Landing and booking share one brand: forest / honey / cream.
 
 ## Design direction
 

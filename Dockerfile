@@ -4,19 +4,9 @@
 FROM node:22-bookworm-slim AS build
 WORKDIR /app
 
-# Private @infynox/pretheeksha-design (GitHub). Coolify → Build args / secrets:
-#   GITHUB_TOKEN = PAT with Contents: Read on Infynox-dev/pretheeksha-design (or classic repo)
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends git ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
-
+# @infynox/pretheeksha-design comes from the public npm registry (no GITHUB_TOKEN).
 COPY package.json package-lock.json ./
-
-ARG GITHUB_TOKEN=
-RUN if [ -n "$GITHUB_TOKEN" ]; then \
-      git config --global url."https://x-access-token:${GITHUB_TOKEN}@github.com/".insteadOf "https://github.com/"; \
-    fi \
-    && npm ci --no-audit --no-fund
+RUN npm ci --no-audit --no-fund
 
 COPY . .
 
