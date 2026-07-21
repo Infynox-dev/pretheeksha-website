@@ -9,13 +9,21 @@ export default defineConfig({
   // CMS `/practitioners/{slug}` → rich static profiles (avoid thin/homepage shell).
   redirects: {
     '/practitioners/dr-unnikrishnan': '/dr-unnikrishnan',
+    '/practitioners/dr-unnikrishnan/': '/dr-unnikrishnan',
     '/practitioners/unnikrishnan': '/dr-unnikrishnan',
+    '/practitioners/unnikrishnan/': '/dr-unnikrishnan',
     '/practitioners/dr-priyanka-bhuvanendran': '/dr-priyanka',
+    '/practitioners/dr-priyanka-bhuvanendran/': '/dr-priyanka',
     '/practitioners/dr-priyanka': '/dr-priyanka',
+    '/practitioners/dr-priyanka/': '/dr-priyanka',
     '/practitioners/priyanka': '/dr-priyanka',
+    '/practitioners/priyanka/': '/dr-priyanka',
     '/practitioners/dr-gopika': '/dr-gopika',
+    '/practitioners/dr-gopika/': '/dr-gopika',
     '/practitioners/dr-gopika-nair': '/dr-gopika',
+    '/practitioners/dr-gopika-nair/': '/dr-gopika',
     '/practitioners/gopika': '/dr-gopika',
+    '/practitioners/gopika/': '/dr-gopika',
   },
   vite: {
     // Default Astro envPrefix is only PUBLIC_. Expose build-time content API
