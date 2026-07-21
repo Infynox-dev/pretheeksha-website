@@ -210,7 +210,69 @@ const options =
   });
 </script>
 
-<style>
+  .contact-form {
+    background: var(--shell);
+    border-radius: var(--radius-lg);
+    padding: clamp(1.8rem, 3vw, 2.6rem);
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(31, 58, 44, 0.06);
+  }
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    margin-bottom: 1.1rem;
+  }
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  .field label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--ink-soft);
+  }
+  .field label span {
+    color: var(--ink-muted);
+    font-weight: 400;
+  }
+  .field input,
+  .field select,
+  .field textarea {
+    font: inherit;
+    font-size: 0.95rem;
+    color: var(--ink);
+    padding: 0.8rem 1rem;
+    border-radius: var(--radius-sm);
+    border: 1.5px solid rgba(31, 58, 44, 0.14);
+    background: var(--cream);
+    transition: border-color 0.25s var(--ease), box-shadow 0.25s var(--ease);
+    width: 100%;
+    min-width: 0;
+    resize: vertical;
+  }
+  .field textarea {
+    min-height: 6.5rem;
+    line-height: 1.5;
+  }
+  .field input:focus,
+  .field select:focus,
+  .field textarea:focus {
+    outline: none;
+    border-color: var(--moss);
+    box-shadow: 0 0 0 4px rgba(138, 164, 137, 0.22);
+  }
+  .contact-submit {
+    width: 100%;
+    margin-top: 0.4rem;
+  }
+  .form-note {
+    font-size: 0.8rem;
+    color: var(--ink-muted);
+    text-align: center;
+    margin-top: 0.9rem;
+  }
   .consent-row {
     display: flex;
     align-items: flex-start;
@@ -243,5 +305,10 @@ const options =
   [data-lead-submit][disabled] {
     opacity: 0.7;
     cursor: progress;
+  }
+  @media (max-width: 640px) {
+    .field-row {
+      grid-template-columns: 1fr;
+    }
   }
 </style>
