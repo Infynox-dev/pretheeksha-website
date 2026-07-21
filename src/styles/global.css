@@ -1,57 +1,10 @@
 /* ============================================================
-   Pretheeksha Fertility Centre — Design System
-   Aesthetic: organic botanical warmth, editorial luxury.
-   Calm, hopeful, human — grounded in nature-inspired tones.
+   Pretheeksha Fertility Centre — site styles
+   Tokens: synced from ../../../../pretheeksha-design/tokens.css
+   See pretheeksha-design/DESIGN.md — do not hand-edit vendor tokens.
    ============================================================ */
 
-:root {
-  /* --- Core palette --- */
-  --forest: #1f3a2c;        /* deep botanical green */
-  --forest-700: #2c4d3a;
-  --moss: #3d6b4f;          /* mid green */
-  --sage: #8aa489;          /* soft sage */
-  --sage-tint: #d9e3d6;
-
-  --cream: #f7f2e8;         /* warm paper background */
-  --cream-deep: #efe6d4;
-  --shell: #fbf8f1;         /* lightest card */
-  --sand: #e8ddc7;
-
-  --honey: #c39433;         /* gold accent */
-  --honey-soft: #e6c878;
-  --blush: #e3b3a3;         /* warm rose */
-  --blush-soft: #f3ddd2;
-  --terracotta: #b9663f;
-
-  --ink: #23241f;           /* primary text */
-  --ink-soft: #4f5147;
-  --ink-muted: #7c7c6f;
-
-  /* --- Semantic tokens --- */
-  --bg: var(--cream);
-  --surface: var(--shell);
-  --text: var(--ink);
-  --text-soft: var(--ink-soft);
-  --accent: var(--honey);
-  --brand: var(--forest);
-
-  /* --- Type --- */
-  --font-display: "Fraunces", "Georgia", serif;
-  --font-body: "Hanken Grotesk", system-ui, sans-serif;
-
-  /* --- Rhythm --- */
-  --radius-sm: 10px;
-  --radius: 18px;
-  --radius-lg: 30px;
-  --radius-pill: 999px;
-  --shadow-sm: 0 2px 10px rgba(31, 58, 44, 0.06);
-  --shadow: 0 18px 50px -22px rgba(31, 58, 44, 0.30);
-  --shadow-lg: 0 40px 90px -40px rgba(31, 58, 44, 0.45);
-  --maxw: 1200px;
-  --gutter: clamp(1.25rem, 4vw, 4rem);
-  --section-y: clamp(4.5rem, 9vw, 9rem);
-  --ease: cubic-bezier(0.22, 1, 0.36, 1);
-}
+@import "./vendor/pretheeksha-tokens.css";
 
 /* ---------- Reset ---------- */
 *, *::before, *::after { box-sizing: border-box; }

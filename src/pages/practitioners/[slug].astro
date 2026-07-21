@@ -5,6 +5,7 @@ import Footer from "../../components/Footer.astro";
 import LeadForm from "../../components/LeadForm.astro";
 import { loadContentBundle, type Practitioner } from "../../lib/api/content.ts";
 import { getPublicEnv } from "../../lib/env.ts";
+import { legacyDoctorPathFor } from "../../lib/practitioners.ts";
 import {
   bookingDeepLinkForSlug,
   bookingLoginUrl,
@@ -30,6 +31,16 @@ interface RouteProps {
 }
 
 const { practitioner, services } = Astro.props as RouteProps;
+
+// Prefer rich static profiles over the thin CMS shell for the clinic doctors.
+const legacyPath = legacyDoctorPathFor(
+  practitioner.slug,
+  practitioner.public_display_name,
+);
+if (legacyPath) {
+  return Astro.redirect(legacyPath, 301);
+}
+
 const env = getPublicEnv();
 const attribution = {
   ...extractAttribution(Astro.url.searchParams),
@@ -78,123 +89,100 @@ const seoDescription =
             <p class="practitioner-creds">{practitioner.public_credentials}</p>
           )}
           {practitioner.bio && (
-            <div class="practitioner-bio">
-              {practitioner.bio.split(/\n{2,}/).map((para) => (
-                <p>{para}</p>
-              ))}
-            </div>
+            <p class="practitioner-bio">{practitioner.bio}</p>
           )}
-          <div class="practitioner-cta">
-            <a href={bookCta} class="btn btn-primary">Book Consultation</a>
-            <a href="#enquiry" class="btn btn-ghost">Send an enquiry</a>
-          </div>
+          <a href={bookCta} class="btn btn-primary">Book Consultation</a>
         </div>
       </div>
     </section>
 
-    <section id="enquiry" class="section contact">
-      <span class="blob contact-blob" aria-hidden="true"></span>
-      <div class="wrap wrap-wide contact-grid">
-        <div class="contact-copy" data-reveal>
-          <span class="eyebrow">Send an Enquiry</span>
-          <h2>Ask about a <em>consultation</em></h2>
-          <p class="lede">
-            Share a few details and our care team will respond personally — no
-            pressure, only support.
-          </p>
+    {services.length > 0 && (
+      <section class="section">
+        <div class="wrap wrap-wide">
+          <div class="section-head" data-reveal>
+            <span class="eyebrow">Care</span>
+            <h2>Related services</h2>
+          </div>
+          <ul class="service-list">
+            {services.slice(0, 6).map((s) => (
+              <li>
+                <strong>{s.public_name}</strong>
+                {s.summary && <p>{s.summary}</p>}
+              </li>
+            ))}
+          </ul>
+          <div class="lead-wrap">
+            <LeadForm />
+          </div>
         </div>
-        <LeadForm services={services} formId="practitioner-lead" />
-      </div>
-    </section>
+      </section>
+    )}
   </main>
   <Footer />
 </Base>
 
 <style>
   .practitioner-hero {
-    padding-block: clamp(4rem, 8vw, 7rem);
-    background: linear-gradient(180deg, var(--cream), var(--cream-deep));
+    padding: clamp(3rem, 8vw, 5.5rem) 0;
+    background: linear-gradient(180deg, var(--shell) 0%, rgba(232, 240, 234, 0.45) 100%);
   }
   .practitioner-grid {
     display: grid;
     grid-template-columns: 0.9fr 1.1fr;
-    gap: clamp(2.5rem, 6vw, 5rem);
+    gap: clamp(2rem, 5vw, 4rem);
     align-items: center;
   }
-  .practitioner-photo {
-    aspect-ratio: 4 / 4.2;
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    background: radial-gradient(120% 90% at 50% 0%, var(--sage-tint), var(--cream-deep));
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
+  .practitioner-photo img {
+    width: 100%;
+    max-width: 420px;
+    border-radius: var(--radius-lg, 1.25rem);
+    object-fit: cover;
     box-shadow: var(--shadow);
   }
-  .practitioner-photo img {
-    width: 92%;
-    height: 100%;
-    object-fit: contain;
-    object-position: bottom;
-    filter: drop-shadow(0 16px 24px rgba(31, 58, 44, 0.18));
-  }
   .practitioner-photo-placeholder {
+    width: min(100%, 320px);
+    aspect-ratio: 4/5;
+    border-radius: var(--radius-lg, 1.25rem);
+    background: var(--sage-tint, #e8f0ea);
     display: grid;
     place-items: center;
-    width: 100%;
-    height: 100%;
-    color: var(--forest);
     font-family: var(--font-display);
-    font-size: 6rem;
+    font-size: 4rem;
+    color: var(--forest);
   }
   .practitioner-copy h1 {
-    margin: 0.8rem 0 0.6rem;
+    font-size: clamp(2rem, 4vw, 2.8rem);
+    margin: 0.4rem 0 0.6rem;
   }
   .practitioner-creds {
     color: var(--moss);
     font-weight: 600;
-    letter-spacing: 0.02em;
-    margin-bottom: 1.2rem;
+    margin-bottom: 1rem;
   }
-  .practitioner-bio p + p {
-    margin-top: 1rem;
-  }
-  .practitioner-bio p {
+  .practitioner-bio {
     color: var(--text-soft);
+    margin-bottom: 1.5rem;
+    max-width: 36rem;
+    line-height: 1.6;
   }
-  .practitioner-cta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.9rem;
-    margin-top: 1.8rem;
+  .service-list {
+    display: grid;
+    gap: 1rem;
+    margin: 1.5rem 0 2.5rem;
+  }
+  .service-list li {
+    padding: 1rem 1.25rem;
+    background: var(--surface, #fff);
+    border: 1px solid rgba(31, 58, 44, 0.08);
+    border-radius: var(--radius, 0.75rem);
+  }
+  .service-list p {
+    margin: 0.35rem 0 0;
+    color: var(--text-soft);
+    font-size: 0.95rem;
   }
   @media (max-width: 900px) {
     .practitioner-grid {
-      grid-template-columns: 1fr;
-    }
-    .practitioner-photo {
-      max-width: 420px;
-      margin-inline: auto;
-    }
-  }
-  .contact-blob {
-    width: 480px;
-    height: 480px;
-    background: radial-gradient(circle, rgba(227, 179, 163, 0.4), transparent 70%);
-    bottom: -180px;
-    left: -160px;
-  }
-  .contact-grid {
-    display: grid;
-    grid-template-columns: 1fr 1.05fr;
-    gap: clamp(2.5rem, 6vw, 5rem);
-    align-items: center;
-  }
-  .contact {
-    overflow: hidden;
-  }
-  @media (max-width: 900px) {
-    .contact-grid {
       grid-template-columns: 1fr;
     }
   }

@@ -54,9 +54,13 @@ const team = practitioners.map((p) => {
     creds: p.public_credentials ?? "",
     role: legacy.role ?? "Pretheeksha Practitioner",
     img: p.photo_url ?? legacy.img ?? "/images/logo.png",
-    url: `/practitioners/${p.slug}`,
+    // Prefer rich /dr-* when known; else CMS slug (redirects to /dr-* via config).
+    url: legacy.legacyHref ?? `/practitioners/${p.slug}`,
   };
 });
+
+const gopikaHref =
+  team.find((t) => /gopika/i.test(t.name))?.url ?? "/dr-gopika";
 
 const stories = testimonials.map((t) => ({
   quote: t.body,
@@ -267,7 +271,7 @@ const stories = testimonials.map((t) => ({
         </div>
         <div class="nidhi-doctor" data-reveal data-reveal="2">
           <div class="nidhi-photo">
-            <a href="/dr-gopika" aria-label="View Dr. Gopika Nair's profile">
+            <a href={gopikaHref} aria-label="View Dr. Gopika Nair's profile">
               <img src="/images/dr-gopika.png" alt="Dr. Gopika Nair" loading="lazy" />
             </a>
           </div>

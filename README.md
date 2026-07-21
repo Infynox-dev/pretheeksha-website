@@ -2,6 +2,19 @@
 
 A complete, top-to-bottom redesign of [pretheeksha.com](https://pretheeksha.com) — a fertility and paediatric care centre in Kollam, Kerala. Rebuilt as a fast, accessible, single-page experience with [Astro](https://astro.build).
 
+## Design system (shared with booking)
+
+**Source of truth:** [`../pretheeksha-design/`](../pretheeksha-design/) — read [`DESIGN.md`](../pretheeksha-design/DESIGN.md) before changing colors, type, or shells.
+
+| Item | Path |
+|------|------|
+| Tokens | `pretheeksha-design/tokens.css` |
+| Vendored copy (do not hand-edit) | `src/styles/vendor/pretheeksha-tokens.css` |
+| Sync | `cd ../pretheeksha-design && ./sync-tokens.sh` |
+| Rollout tracker | `pretheeksha-design/PROGRESS.md` |
+
+Landing and the appointment-booking app share one brand: forest / honey / cream. Agents and developers must follow the contract in `DESIGN.md` (no cold blue brand primary; Book CTAs use honey/forest).
+
 ## Design direction
 
 The redesign moves away from the older "clinical" look toward the **warm, human-centred, nature-grounded** aesthetic that defines award-winning healthcare design in 2026. The brief: meet patients at a vulnerable, hopeful moment with calm and trust.

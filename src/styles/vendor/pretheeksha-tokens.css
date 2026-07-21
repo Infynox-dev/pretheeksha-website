@@ -1,0 +1,73 @@
+/**
+ * Pretheeksha — shared design tokens (source of truth)
+ *
+ * Consumed by:
+ *   - pretheeksha_landing_website (Astro)
+ *   - pretheeksha_appointment-booking-fe (Vite/React)
+ *
+ * Edit HERE, then run: ./sync-tokens.sh
+ * Do not hand-edit vendored copies in the apps.
+ *
+ * Contract: see DESIGN.md in this folder.
+ */
+
+:root {
+  /* --- Core palette --- */
+  --forest: #1f3a2c;
+  --forest-700: #2c4d3a;
+  --moss: #3d6b4f;
+  --sage: #8aa489;
+  --sage-tint: #d9e3d6;
+
+  --cream: #f7f2e8;
+  --cream-deep: #efe6d4;
+  --shell: #fbf8f1;
+  --sand: #e8ddc7;
+
+  --honey: #c39433;
+  --honey-soft: #e6c878;
+  --blush: #e3b3a3;
+  --blush-soft: #f3ddd2;
+  --terracotta: #b9663f;
+
+  --ink: #23241f;
+  --ink-soft: #4f5147;
+  --ink-muted: #7c7c6f;
+
+  /* --- Semantic --- */
+  --bg: var(--cream);
+  --surface: var(--shell);
+  --surface-ops: #ffffff;
+  --text: var(--ink);
+  --text-soft: var(--ink-soft);
+  --accent: var(--honey);
+  --brand: var(--forest);
+
+  /* Status (allowed outside brand remap) */
+  --status-pending: #b45309;
+  --status-success: #166534;
+  --status-danger: #b91c1c;
+  --status-info: #3d6b4f;
+
+  /* --- Type --- */
+  --font-display: "Fraunces", "Georgia", serif;
+  --font-body: "Hanken Grotesk", system-ui, sans-serif;
+
+  /* --- Rhythm --- */
+  --radius-sm: 10px;
+  --radius: 18px;
+  --radius-lg: 30px;
+  --radius-pill: 999px;
+  --shadow-sm: 0 2px 10px rgba(31, 58, 44, 0.06);
+  --shadow: 0 18px 50px -22px rgba(31, 58, 44, 0.3);
+  --shadow-lg: 0 40px 90px -40px rgba(31, 58, 44, 0.45);
+  --maxw: 1200px;
+  --gutter: clamp(1.25rem, 4vw, 4rem);
+  --section-y: clamp(4.5rem, 9vw, 9rem);
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Atmosphere (page wash) */
+  --bg-wash:
+    radial-gradient(120% 80% at 100% 0%, rgba(195, 148, 51, 0.06), transparent 55%),
+    radial-gradient(90% 70% at 0% 100%, rgba(138, 164, 137, 0.1), transparent 50%);
+}

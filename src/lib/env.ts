@@ -46,6 +46,8 @@ export interface PublicEnv {
   PUBLIC_BOOKING_APP_URL: string;
   PUBLIC_LEAD_PURPOSE_CODE: string;
   PUBLIC_CONTENT_LOCALE: string;
+  /** When false, Header / profile chrome hide Report Bug and Base skips the modal. */
+  PUBLIC_ENABLE_BUG_REPORTS: boolean;
 }
 
 export function getBuildEnv(): BuildEnv {
@@ -97,6 +99,25 @@ export function getBuildEnv(): BuildEnv {
   };
 }
 
+/**
+ * Bug-report chrome. Explicit PUBLIC_ENABLE_BUG_REPORTS wins.
+ * Default: on in Vite/Astro DEV and when SITE_URL looks like staging/local; off in production builds.
+ */
+export function isBugReportsEnabled(): boolean {
+  const explicit = pick(
+    import.meta.env.PUBLIC_ENABLE_BUG_REPORTS,
+    fromProcess("PUBLIC_ENABLE_BUG_REPORTS"),
+  );
+  if (explicit != null && explicit !== "") return bool(explicit, false);
+  if (import.meta.env.DEV) return true;
+  const site =
+    pick(fromProcess("SITE_URL"), import.meta.env.SITE as string | undefined) ||
+    "";
+  if (/staging/i.test(site)) return true;
+  if (/127\.0\.0\.1|localhost/i.test(site)) return true;
+  return false;
+}
+
 export function getPublicEnv(): PublicEnv {
   const publicApi =
     pick(
@@ -111,7 +132,7 @@ export function getPublicEnv(): PublicEnv {
       pick(
         import.meta.env.PUBLIC_BOOKING_APP_URL,
         fromProcess("PUBLIC_BOOKING_APP_URL"),
-      ) || "http://localhost:3000/",
+      ) || "http://127.0.0.1:3000/",
     PUBLIC_LEAD_PURPOSE_CODE:
       pick(
         import.meta.env.PUBLIC_LEAD_PURPOSE_CODE,
@@ -126,5 +147,6 @@ export function getPublicEnv(): PublicEnv {
         import.meta.env.CONTENT_LOCALE,
         fromProcess("CONTENT_LOCALE"),
       ) || "en-IN",
+    PUBLIC_ENABLE_BUG_REPORTS: isBugReportsEnabled(),
   };
 }

@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css";
 import BugReport from "../components/BugReport.astro";
+import { isBugReportsEnabled } from "../lib/env.ts";
 
 interface SeoMetaProp {
   title?: string | null;
@@ -26,6 +27,8 @@ const {
   description: descriptionProp,
   seo,
 } = Astro.props as Props;
+
+const showBugReports = isBugReportsEnabled();
 
 const title = seo?.title || titleProp || DEFAULT_TITLE;
 const description = seo?.description || descriptionProp || DEFAULT_DESCRIPTION;
@@ -87,7 +90,7 @@ const robots = seo?.robots || null;
   </head>
   <body>
     <slot />
-    <BugReport />
+    {showBugReports && <BugReport />}
 
     <script is:inline>
       // Staggered scroll reveal
