@@ -1,50 +1,27 @@
-# Pretheeksha Fertility Centre — Website Redesign
+# Pretheeksha Fertility Centre — Website
 
-A complete, top-to-bottom redesign of [pretheeksha.com](https://pretheeksha.com) — a fertility and paediatric care centre in Kollam, Kerala. Rebuilt as a fast, accessible, single-page experience with [Astro](https://astro.build).
+Marketing site for [pretheeksha.com](https://pretheeksha.com) — fertility and paediatric care in Kollam, Kerala. Built with [Astro](https://astro.build).
+
+| | |
+|---|---|
+| **Docs index** | [`docs/README.md`](docs/README.md) |
+| **Design brief** | [`docs/DESIGN_DIRECTION.md`](docs/DESIGN_DIRECTION.md) |
+| **Design package** | [`@infynox/pretheeksha-design`](https://www.npmjs.com/package/@infynox/pretheeksha-design) |
 
 ## Design system (shared with booking)
-
-**Package:** [`@infynox/pretheeksha-design`](https://www.npmjs.com/package/@infynox/pretheeksha-design) `^1.0.0` (npmjs)  
-**Contract:** [`DESIGN.md`](https://github.com/Infynox-dev/pretheeksha-design/blob/main/DESIGN.md)
 
 ```css
 @import "@infynox/pretheeksha-design/tokens.css";
 ```
 
-Coolify: **no `GITHUB_TOKEN`** — install is from the public registry. Landing and booking share one brand: forest / honey / cream.
-
-## Design direction
-
-The redesign moves away from the older "clinical" look toward the **warm, human-centred, nature-grounded** aesthetic that defines award-winning healthcare design in 2026. The brief: meet patients at a vulnerable, hopeful moment with calm and trust.
-
-- **Aesthetic** — organic botanical warmth, editorial luxury. Calm, hopeful, premium without feeling sterile.
-- **Palette** — deep botanical green (`--forest`) grounded by warm cream/paper backgrounds, a honey-gold accent, and soft sage / blush supporting tones. Warm neutrals reduce visual fatigue and feel human.
-- **Typography** — **Fraunces** (a characterful optical display serif) paired with **Hanken Grotesk** (a clean, humanist body sans). Distinctive, not generic.
-- **Motion** — a staggered hero reveal on load, gentle scroll-triggered reveals (`IntersectionObserver`), and tactile hover states. All motion respects `prefers-reduced-motion`.
-- **Atmosphere** — layered radial gradient meshes, soft organic "blob" glows, rounded forms, and depth via soft shadows rather than flat blocks.
-
-These choices are grounded in current healthcare/fertility web-design research: warmth over clinical coldness, nature-inspired palettes, empathetic copy led by the patient's emotional journey, prominent trust signals (doctor profiles, patient stories), and low-pressure conversion paths.
-
-## Sections
-
-1. **Header** — slim contact topbar + sticky, blur-backed nav that condenses on scroll; full mobile drawer.
-2. **Hero** — "Hope finds a home here", warm full-bleed imagery, dual CTAs, trust bullets.
-3. **Promise strip** — four brand commitments on the deep-green band.
-4. **About / Your Parenthood Awaits** — layered imagery, checklist, app-download.
-5. **Our Commitment** — four value cards (Path to Parenthood, Miracle Happens, Life Goals, Dream It).
-6. **Treatments** — fertility services (Evaluation, IUI, IVF, ICSI, Preservation, Online Consultation).
-7. **Meet Our Team** — Dr. Unnikrishnan MS & Dr. Priyanka Bhuvanendran.
-8. **Nidhi · Paediatric Care** — Dr. Gopika Nair.
-9. **Voices of Delight** — patient testimonials.
-10. **App band** — download call-to-action.
-11. **Contact** — empathetic, low-pressure consultation form + clinic details.
-12. **Footer** — navigation, contact, social links.
+Coolify: **no `GITHUB_TOKEN`** — install from the public npm registry. Brand: forest / honey / cream.
 
 ## Tech
 
-- **Astro 5** — static output, zero JS shipped except a tiny inline script for the nav + scroll reveals.
-- Custom CSS design system (`src/styles/global.css`) with design tokens; component-scoped styles.
-- SEO: canonical URL, Open Graph tags, and `MedicalClinic` JSON-LD structured data.
+- **Astro 5** — static output; tiny inline script for nav + scroll reveals
+- Design tokens via `@infynox/pretheeksha-design`; component-scoped styles
+- SEO: canonical URL, Open Graph, `MedicalClinic` JSON-LD
+- Content from platform API at build time (fail-closed)
 
 ## Getting started
 
@@ -54,55 +31,37 @@ cp .env.example .env
 npm run dev      # http://localhost:4321
 npm run build    # outputs to ./dist
 npm run preview  # preview the production build
-npm run verify   # spins a mock content API + asserts Task 17 acceptance
+npm run verify   # mock content API + Task 17 acceptance
 ```
 
 ## Environment variables
 
-Configured in `.env` (see `.env.example`). Astro exposes any `PUBLIC_*` var
-to shipped browser JS; everything else is server/build-time only.
+See `.env.example`. Astro exposes `PUBLIC_*` to the browser; everything else is build/server-only.
 
 | Variable | Scope | Purpose |
 |----------|-------|---------|
-| `API_BASE_URL` | build | Public content API base used by build-time fetches (e.g. `http://127.0.0.1:8000/api/v1`). **Required.** |
-| `PUBLIC_API_BASE_URL` | browser | API base used by the lead form + consent discovery in the browser. Falls back to `API_BASE_URL` if unset. |
-| `PUBLIC_BOOKING_APP_URL` | browser | Base URL of the booking app that "Book Consultation" CTAs deep-link into. |
-| `PUBLIC_LEAD_PURPOSE_CODE` | browser | Consent purpose code the lead form binds to. Default: `marketing`. |
-| `PUBLIC_CONTENT_LOCALE` | browser | Locale used for consent notice discovery + SEO fetches. Default: `en-IN`. |
-| `CONTENT_FAIL_CLOSED` | build | When `true` (default), any required content endpoint failure breaks the build. **Never disable in CI/production.** |
-| `ALLOW_CONTENT_FALLBACK` | build | Local-only escape hatch. When `true`, a required content fetch failure falls back to `fixtures/content-fallback.json` instead of failing the build. |
-| `SITE_URL` | build | Overrides `astro.config.mjs` `site` for canonical URLs (used in staging). |
+| `API_BASE_URL` | build | Content API base for build-time fetches. **Required.** |
+| `PUBLIC_API_BASE_URL` | browser | Lead form + consent discovery (falls back to `API_BASE_URL`) |
+| `PUBLIC_BOOKING_APP_URL` | browser | Book Consultation deep-link base |
+| `PUBLIC_LEAD_PURPOSE_CODE` | browser | Consent purpose code (default `marketing`) |
+| `PUBLIC_CONTENT_LOCALE` | browser | Locale for consent/SEO (default `en-IN`) |
+| `CONTENT_FAIL_CLOSED` | build | Required content failure breaks build (default `true`) |
+| `ALLOW_CONTENT_FALLBACK` | build | Local-only: use `fixtures/content-fallback.json` |
+| `SITE_URL` | build | Canonical site override (staging) |
+| `PUBLIC_ENABLE_BUG_REPORTS` | browser | Show Report Bug chrome |
 
 ### Fail-closed policy
 
-Required endpoints (`/content/site-settings`, `/content/practitioners`,
-`/content/services`, `/content/seo`) MUST return `2xx` or the build fails.
-This is deliberate: shipping a landing page with silently-missing sections is
-worse than shipping no build at all. Optional endpoints
-(`/content/testimonials`, `/content/faqs`) degrade gracefully — those
-sections just omit content.
+Required endpoints (`/content/site-settings`, `/content/practitioners`, `/content/services`, `/content/seo`) must return `2xx` or the build fails. Optional endpoints (`/content/testimonials`, `/content/faqs`) degrade gracefully.
 
-The one exception is `ALLOW_CONTENT_FALLBACK=true`, which loads
-`fixtures/content-fallback.json`. Use it for local dev only; leave it `false`
-in CI, staging, and production.
+`ALLOW_CONTENT_FALLBACK=true` is **local only** — leave `false` in CI/staging/production.
 
 ### Local laptop without API / DB tunnel
 
-Homepage content is fetched at build/dev time from the platform API. If Postgres
-is only reachable via the OCI SSH tunnel (`localhost:5433`) and that tunnel (or
-`uv run pretheeksha-api`) is down, Astro fails closed with a 500 / build error.
+1. Start the OCI tunnel + platform API, then `npm run dev`, **or**
+2. Set `ALLOW_CONTENT_FALLBACK=true` in `.env` (never in Coolify).
 
-**Options (local only):**
-
-1. Start the tunnel + API, then `npm run dev`.
-2. Or set `ALLOW_CONTENT_FALLBACK=true` in `.env` so the site serves
-   `fixtures/content-fallback.json` instead of crashing. Never enable this in
-   staging/production Coolify build args.
-
-The lead form never embeds a seeded consent notice UUID. Instead, it
-discovers the current published notice at submit time via
-`GET /consent/notices/current?purpose=<code>&locale=<locale>` and submits
-the lead bound to that notice id.
+Lead form discovers the current consent notice via `GET /consent/notices/current` at submit time.
 
 ## Project structure
 
@@ -112,22 +71,16 @@ src/
   layouts/Base.astro                 <head>, fonts, structured data, optional API SEO
   components/Header.astro            Topbar + sticky nav (env-driven Book CTA)
   components/Footer.astro            Footer (env-driven Book CTA)
-  components/LeadForm.astro          Consent-aware lead capture (notice discovery + POST)
-  pages/index.astro                  Home page — fetches practitioners/services/testimonials/SEO at build
-  pages/practitioners/[slug].astro   Dynamic practitioner pages from /content/practitioners
-  pages/dr-unnikrishnan.astro        Rich static legacy profile (kept as fallback)
+  components/LeadForm.astro          Consent-aware lead capture
+  pages/index.astro                  Home — practitioners/services/testimonials/SEO at build
+  pages/practitioners/[slug].astro   Dynamic practitioner pages
+  pages/dr-*.astro                   Legacy static profiles (+ redirects)
   lib/env.ts                         Build + public env resolvers
-  lib/booking.ts                     Book CTA URL + UTM passthrough helper
+  lib/booking.ts                     Book CTA URL + UTM passthrough
   lib/api/content.ts                 Build-time content client (fail-closed)
-  lib/api/consent.ts                 Browser-side notice discovery + lead submission
-  styles/global.css                  Design tokens + base styles
-fixtures/content-fallback.json       Local-only content bundle used when ALLOW_CONTENT_FALLBACK=true
-scripts/verify-landing.mjs           Task 17 automated verification (mock API + astro build)
+  lib/api/consent.ts                 Browser notice discovery + leads
+  styles/global.css                  Base styles (imports design tokens)
+fixtures/content-fallback.json       Local-only content bundle
+scripts/verify-landing.mjs           Task 17 verification
+docs/                                Design brief + index
 ```
-
-## Notes for the client
-
-- **Imagery** — the doctor portraits and logo are the official assets from pretheeksha.com. Hero/lifestyle photographs are tasteful royalty-free stand-ins (Unsplash) and should be swapped for the clinic's own photography before launch.
-- **Testimonials** — patient quotes are now sourced from `/content/testimonials`. Add approved, consented patient stories through the platform's content admin flow.
-- **Contact form** — wired to the Pretheeksha platform's `/content/leads` endpoint with consent notice discovery. No `mailto:` fallback.
-- **App store links** — placeholders (`#`); point them to the live Play Store / App Store listings.
