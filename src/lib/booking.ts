@@ -68,3 +68,59 @@ export function bookingUrl(
     return `${baseUrl}${sep}${qs}`;
   }
 }
+
+export type BookingDeepLink = {
+  tab: "consultation" | "nidhi" | "scanning";
+  doctor: string;
+};
+
+/** Map landing practitioner / legacy profile slugs to booking deep-link params. */
+export function bookingDeepLinkForSlug(slug: string): BookingDeepLink {
+  const s = slug.toLowerCase();
+  if (s.includes("gopika") || s.includes("nidhi")) {
+    return { tab: "nidhi", doctor: "gopika" };
+  }
+  if (s.includes("priyanka")) {
+    return { tab: "consultation", doctor: "priyanka" };
+  }
+  if (s.includes("unni")) {
+    return { tab: "consultation", doctor: "unnikrishnan" };
+  }
+  return {
+    tab: "consultation",
+    doctor: s.replace(/^dr-/, "").replace(/-bhuvanendran$/, ""),
+  };
+}
+
+/**
+ * Booking app login URL with tab/doctor deep link + attribution.
+ * Example: https://staging-booking…/login?tab=nidhi&doctor=gopika&utm_source=…
+ */
+export function bookingLoginUrl(
+  baseUrl: string,
+  deepLink: BookingDeepLink,
+  attribution: Record<string, string> = {},
+): string {
+  if (!baseUrl) return "#";
+  const params: Record<string, string> = {
+    tab: deepLink.tab,
+    doctor: deepLink.doctor,
+  };
+  for (const [k, v] of Object.entries(attribution)) {
+    if (v && (ATTRIBUTION_KEYS as readonly string[]).includes(k)) params[k] = v;
+  }
+
+  try {
+    const url = new URL(baseUrl);
+    const basePath = url.pathname.replace(/\/?$/, "/");
+    url.pathname = `${basePath}login`.replace(/\/{2,}/g, "/");
+    for (const [k, v] of Object.entries(params)) {
+      url.searchParams.set(k, v);
+    }
+    return url.toString();
+  } catch {
+    const root = baseUrl.replace(/\/?$/, "/");
+    const qs = new URLSearchParams(params).toString();
+    return `${root}login?${qs}`;
+  }
+}

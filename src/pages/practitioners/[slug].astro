@@ -5,7 +5,11 @@ import Footer from "../../components/Footer.astro";
 import LeadForm from "../../components/LeadForm.astro";
 import { loadContentBundle, type Practitioner } from "../../lib/api/content.ts";
 import { getPublicEnv } from "../../lib/env.ts";
-import { bookingUrl } from "../../lib/booking.ts";
+import {
+  bookingDeepLinkForSlug,
+  bookingLoginUrl,
+  extractAttribution,
+} from "../../lib/booking.ts";
 
 export async function getStaticPaths() {
   const bundle = await loadContentBundle({
@@ -27,11 +31,17 @@ interface RouteProps {
 
 const { practitioner, services } = Astro.props as RouteProps;
 const env = getPublicEnv();
-const bookCta = bookingUrl(env.PUBLIC_BOOKING_APP_URL, {
+const attribution = {
+  ...extractAttribution(Astro.url.searchParams),
   utm_source: "landing",
   utm_medium: "practitioner",
   utm_campaign: practitioner.slug,
-});
+};
+const bookCta = bookingLoginUrl(
+  env.PUBLIC_BOOKING_APP_URL,
+  bookingDeepLinkForSlug(practitioner.slug),
+  attribution,
+);
 
 const seoTitle =
   practitioner.seo_title ||

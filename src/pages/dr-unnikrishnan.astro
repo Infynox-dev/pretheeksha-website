@@ -1,6 +1,12 @@
 ---
 import Base from "../layouts/Base.astro";
 import Footer from "../components/Footer.astro";
+import { getPublicEnv } from "../lib/env.ts";
+import {
+  bookingDeepLinkForSlug,
+  bookingLoginUrl,
+  extractAttribution,
+} from "../lib/booking.ts";
 
 const credentials = "MBBS, DGO, DNB, FMAS, FRM";
 
@@ -64,7 +70,13 @@ const phonePrimary = "+918330084300";
 const phoneDisplay = "+91 83300 84300";
 const clinicEmail = "klmclinic@pretheeksha.com";
 const clinicAddress = "Pretheeksha Fertility Centre, Meenad, Kollam, Kerala — 691573, India";
-const bookingUrl = "http://localhost:3000/login?tab=consultation&doctor=unnikrishnan";
+const env = getPublicEnv();
+const attribution = extractAttribution(Astro.url.searchParams);
+const bookingUrl = bookingLoginUrl(
+  env.PUBLIC_BOOKING_APP_URL,
+  bookingDeepLinkForSlug("unnikrishnan"),
+  attribution,
+);
 ---
 
 <Base

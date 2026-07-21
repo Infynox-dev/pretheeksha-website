@@ -156,10 +156,10 @@ const stories = testimonials.map((t) => ({
           <div class="about-actions">
             <a href="#enquiry" class="btn btn-primary">Begin Your Journey</a>
             <div class="app-mini">
-              <span>Download the app</span>
+              <span>Mobile app coming soon</span>
               <div class="app-mini-btns">
-                <a href="#" class="store" aria-label="Get it on Google Play">▶ Play Store</a>
-                <a href="#" class="store" aria-label="Download on the App Store">⌘ App Store</a>
+                <span class="store store-disabled" aria-disabled="true">▶ Play Store</span>
+                <span class="store store-disabled" aria-disabled="true">⌘ App Store</span>
               </div>
             </div>
           </div>
@@ -314,8 +314,8 @@ const stories = testimonials.map((t) => ({
         <p class="lede on-dark">Book consultations, track your journey and stay connected with your care
           team — anytime, from anywhere.</p>
         <div class="app-band-btns">
-          <a href="#" class="btn btn-gold">▶ Google Play</a>
-          <a href="#" class="btn btn-light">⌘ App Store</a>
+          <span class="btn btn-gold store-disabled" aria-disabled="true">▶ Google Play — coming soon</span>
+          <span class="btn btn-light store-disabled" aria-disabled="true">⌘ App Store — coming soon</span>
         </div>
       </div>
     </section>
@@ -478,6 +478,11 @@ const stories = testimonials.map((t) => ({
     border-radius: var(--radius-pill); transition: all 0.3s var(--ease);
   }
   .store:hover { background: var(--forest); color: var(--shell); border-color: var(--forest); }
+  .store-disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
 
   /* ===================== COMMITMENT ===================== */
   .commitment { background: linear-gradient(180deg, var(--cream), var(--cream-deep)); }

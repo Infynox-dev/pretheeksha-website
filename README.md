@@ -75,6 +75,19 @@ The one exception is `ALLOW_CONTENT_FALLBACK=true`, which loads
 `fixtures/content-fallback.json`. Use it for local dev only; leave it `false`
 in CI, staging, and production.
 
+### Local laptop without API / DB tunnel
+
+Homepage content is fetched at build/dev time from the platform API. If Postgres
+is only reachable via the OCI SSH tunnel (`localhost:5433`) and that tunnel (or
+`uv run pretheeksha-api`) is down, Astro fails closed with a 500 / build error.
+
+**Options (local only):**
+
+1. Start the tunnel + API, then `npm run dev`.
+2. Or set `ALLOW_CONTENT_FALLBACK=true` in `.env` so the site serves
+   `fixtures/content-fallback.json` instead of crashing. Never enable this in
+   staging/production Coolify build args.
+
 The lead form never embeds a seeded consent notice UUID. Instead, it
 discovers the current published notice at submit time via
 `GET /consent/notices/current?purpose=<code>&locale=<locale>` and submits

@@ -15,11 +15,8 @@ const links = [
   { label: "Patient Stories", href: "/#stories" },
   { label: "Book Consultation", href: bookHref },
 ];
-const socials = [
-  { label: "YouTube", href: "#", d: "M22.54 6.42a2.78 2.78 0 0 0-1.95-2C18.88 4 12 4 12 4s-6.88 0-8.59.42a2.78 2.78 0 0 0-1.95 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.41 19c1.71.42 8.59.42 8.59.42s6.88 0 8.59-.42a2.78 2.78 0 0 0 1.95-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33ZM9.75 15.02v-6.5l5.75 3.25-5.75 3.25Z" },
-  { label: "Facebook", href: "#", d: "M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3Z" },
-  { label: "Instagram", href: "#", d: "M16 3H8a5 5 0 0 0-5 5v8a5 5 0 0 0 5 5h8a5 5 0 0 0 5-5V8a5 5 0 0 0-5-5Zm-4 5.5A3.5 3.5 0 1 1 8.5 12 3.5 3.5 0 0 1 12 8.5Zm4.8-.3a.9.9 0 1 1-.9-.9.9.9 0 0 1 .9.9Z" },
-];
+// Hide until real profile URLs exist — bare href="#" is worse than no icons.
+const socials: Array<{ label: string; href: string; d: string }> = [];
 ---
 
 <footer id="footer" class="footer">
@@ -28,13 +25,15 @@ const socials = [
     <div class="footer-brand">
       <img src="/images/logo.png" alt="Pretheeksha Fertility Centre" width="195" height="56" />
       <p>Your trusted partner for complete fertility and paediatric care — expert guidance, advanced technology, and compassionate support at every step of your journey.</p>
-      <div class="socials">
-        {socials.map((s) => (
-          <a href={s.href} aria-label={s.label} class="social">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d={s.d} /></svg>
-          </a>
-        ))}
-      </div>
+      {socials.length > 0 && (
+        <div class="socials">
+          {socials.map((s) => (
+            <a href={s.href} aria-label={s.label} class="social">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d={s.d} /></svg>
+            </a>
+          ))}
+        </div>
+      )}
     </div>
 
     <div class="footer-col">
