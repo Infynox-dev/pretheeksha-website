@@ -16,13 +16,17 @@ export async function getStaticPaths() {
   const bundle = await loadContentBundle({
     routes: ["/practitioners"],
   });
-  return bundle.practitioners.map((p) => ({
-    params: { slug: p.slug },
-    props: {
-      practitioner: p,
-      services: bundle.services,
-    },
-  }));
+  // Skip clinic doctors with rich /dr-* pages — astro.config redirects own those slugs.
+  // Generating a static page here would win over the redirect and serve a thin shell.
+  return bundle.practitioners
+    .filter((p) => !legacyDoctorPathFor(p.slug, p.public_display_name))
+    .map((p) => ({
+      params: { slug: p.slug },
+      props: {
+        practitioner: p,
+        services: bundle.services,
+      },
+    }));
 }
 
 interface RouteProps {
