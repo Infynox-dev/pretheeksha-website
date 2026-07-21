@@ -1,10 +1,10 @@
 /* ============================================================
    Pretheeksha Fertility Centre — site styles
-   Tokens: synced from ../../../../pretheeksha-design/tokens.css
-   See pretheeksha-design/DESIGN.md — do not hand-edit vendor tokens.
+   Tokens: @infynox/pretheeksha-design (npm)
+   Contract: node_modules/@infynox/pretheeksha-design/DESIGN.md
    ============================================================ */
 
-@import "./vendor/pretheeksha-tokens.css";
+@import "@infynox/pretheeksha-design/tokens.css";
 
 /* ---------- Reset ---------- */
 *, *::before, *::after { box-sizing: border-box; }

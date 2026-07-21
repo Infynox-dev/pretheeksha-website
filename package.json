@@ -12,6 +12,7 @@
     "verify": "node scripts/verify-landing.mjs"
   },
   "dependencies": {
+    "@infynox/pretheeksha-design": "github:Infynox-dev/pretheeksha-design#v1.0.0",
     "astro": "^5.6.1"
   }
 }

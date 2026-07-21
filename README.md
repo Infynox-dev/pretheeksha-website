@@ -4,16 +4,22 @@ A complete, top-to-bottom redesign of [pretheeksha.com](https://pretheeksha.com)
 
 ## Design system (shared with booking)
 
-**Source of truth:** [`../pretheeksha-design/`](../pretheeksha-design/) — read [`DESIGN.md`](../pretheeksha-design/DESIGN.md) before changing colors, type, or shells.
+**Package:** `@infynox/pretheeksha-design` → `github:Infynox-dev/pretheeksha-design#v1.0.0`  
+**Contract:** [`DESIGN.md`](https://github.com/Infynox-dev/pretheeksha-design/blob/main/DESIGN.md)
 
-| Item | Path |
-|------|------|
-| Tokens | `pretheeksha-design/tokens.css` |
-| Vendored copy (do not hand-edit) | `src/styles/vendor/pretheeksha-tokens.css` |
-| Sync | `cd ../pretheeksha-design && ./sync-tokens.sh` |
-| Rollout tracker | `pretheeksha-design/PROGRESS.md` |
+```css
+@import "@infynox/pretheeksha-design/tokens.css";
+```
 
-Landing and the appointment-booking app share one brand: forest / honey / cream. Agents and developers must follow the contract in `DESIGN.md` (no cold blue brand primary; Book CTAs use honey/forest).
+When published to npmjs (`npm i @infynox/pretheeksha-design`), Coolify needs no GitHub token. Until then, use the git pin above.
+
+### Coolify — secret while installing from private GitHub
+
+| Build arg / secret | Value |
+|--------------------|--------|
+| `GITHUB_TOKEN` | PAT with **Contents: Read** on `Infynox-dev/pretheeksha-design` (owner **Infynox-dev** or any collaborator with access) |
+
+Landing and booking share one brand: forest / honey / cream. Follow `DESIGN.md`.
 
 ## Design direction
 
